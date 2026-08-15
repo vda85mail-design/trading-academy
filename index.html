@@ -92,11 +92,17 @@ button{font-family:inherit; cursor:pointer;}
 .exp-label{font-size:11px;font-weight:700;letter-spacing:0.5px;margin-bottom:4px;text-transform:uppercase;}
 .exp-label.correct{color:var(--bull);}
 .exp-label.wrong{color:var(--bear);}
+.ex-choice-btn{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13.5px;color:var(--text);}
+.ex-choice-btn:disabled{opacity:0.75;}
+.ex-choice-btn.choice-correct{border-color:var(--bull);background:var(--bullBg);color:var(--bull);font-weight:600;}
+.ex-choice-btn.choice-wrong{border-color:var(--bear);background:var(--bearBg);color:var(--bear);}
 .center-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;}
 .result-icon{width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .settings-row{display:flex;justify-content:space-between;align-items:center;background:var(--surface);border:0.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;}
 .settings-group{background:var(--surface);border:0.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px;}
 .settings-list-row{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-bottom:0.5px solid var(--border);gap:10px;}
+.ui-icon{flex-shrink:0;vertical-align:-3px;margin-right:2px;}
+.label{display:inline-flex;align-items:center;gap:7px;}
 .settings-list-row:last-child{border-bottom:none;}
 .settings-list-row .label{font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:8px;}
 .settings-list-row .value{font-size:12.5px;color:var(--textDim);text-align:right;}
@@ -158,6 +164,11 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
 @keyframes mentorSpeakPulse{ 0%,100%{ transform:scale(1); } 50%{ transform:scale(1.08); } }
 .mentor-bubble{position:relative;background:var(--surface);border:0.5px solid var(--border);border-radius:12px;border-top-left-radius:3px;padding:10px 13px;font-size:12.5px;color:var(--textDim);line-height:1.45;flex:1;}
 .speak-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--surface2);border:0.5px solid var(--border);font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--textDim);}
+.lesson-callout{margin-top:16px;background:linear-gradient(135deg, rgba(203,161,53,0.10), rgba(203,161,53,0.03));border:1px solid rgba(203,161,53,0.35);border-radius:12px;padding:14px;}
+.lesson-callout-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.lesson-callout-title{font-size:12.5px;font-weight:700;color:var(--gold);}
+.lesson-callout-text{font-size:12px;color:var(--textDim);line-height:1.5;margin-bottom:10px;}
+.lesson-callout-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gold);border:1px solid rgba(203,161,53,0.5);border-radius:8px;padding:7px 12px;}
 .speak-btn.speaking{background:var(--gold);color:var(--onGold);animation:speakPulse 1s ease-in-out infinite;}
 .voice-style-row{display:flex;gap:6px;margin-top:2px;}
 .voice-style-btn{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;font-size:11px;color:var(--textDim);text-align:center;}
@@ -238,8 +249,8 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
       <span><b id="home-levels" class="mono">0/9</b> <span class="faint">модулей</span></span>
       <span><b id="home-xp" class="mono">0</b> <span class="faint">XP</span></span>
       <span class="home-stat-links">
-        <span class="home-stat-link" onclick="showScreen('progress')">📊 Прогресс</span>
-        <span class="home-stat-link" onclick="showScreen('certificate')">🏅 Сертификат</span>
+        <span class="home-stat-link" onclick="showScreen('progress')"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="20" x2="6" y2="12"/><line x1="12" y1="20" x2="12" y2="6"/><line x1="18" y1="20" x2="18" y2="15"/></svg> Прогресс</span>
+        <span class="home-stat-link" onclick="showScreen('certificate')"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 6 21l6-3.5 6 3.5-2.5-8.5"/></svg> Сертификат</span>
       </span>
     </div>
 
@@ -283,6 +294,7 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
         <div class="mentor-avatar mentor-avatar-btn" id="lesson-speak-btn" onclick="speakCurrentSlide()" title="Нажмите, чтобы услышать" style="width:44px;height:44px;"></div>
       </div>
       <div class="lesson-body" id="lesson-slide-body"></div>
+      <div id="lesson-callout"></div>
     </div>
     <div class="lesson-nav">
       <button class="btn-nav" id="lesson-back-btn" style="flex:1;display:none;" onclick="prevSlide()">Назад</button>
@@ -387,23 +399,23 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
     <div class="section-label mono">ОФОРМЛЕНИЕ</div>
     <div class="settings-group">
       <div class="settings-list-row">
-        <span class="label">🌗 Тема оформления</span>
-        <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle-btn">🌙</button>
+        <span class="label">Тема оформления</span>
+        <button class="theme-btn" onclick="toggleTheme()" id="theme-toggle-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg></button>
       </div>
       <div class="settings-list-row">
-        <span class="label">🔊 Автоозвучка уроков</span>
-        <button class="theme-btn" onclick="toggleVoiceAuto()" id="voice-toggle-btn">🔈</button>
+        <span class="label">Автоозвучка уроков</span>
+        <button class="theme-btn" onclick="toggleVoiceAuto()" id="voice-toggle-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg></button>
       </div>
       <div class="settings-input-row">
         <label>Голос озвучки</label>
         <div class="voice-style-row" id="voice-style-row">
-          <button class="voice-style-btn" data-style="male" onclick="setVoiceStyle('male')">👨 Мужской</button>
-          <button class="voice-style-btn" data-style="female" onclick="setVoiceStyle('female')">👩 Женский</button>
-          <button class="voice-style-btn" data-style="cartoon" onclick="setVoiceStyle('cartoon')">🤪 Мультяшный</button>
+          <button class="voice-style-btn" data-style="male" onclick="setVoiceStyle('male')"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c0-4 3-6.5 6.5-6.5s6.5 2.5 6.5 6.5"/></svg> Мужской</button>
+          <button class="voice-style-btn" data-style="female" onclick="setVoiceStyle('female')"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c0-4 3-6.5 6.5-6.5s6.5 2.5 6.5 6.5"/></svg> Женский</button>
+          <button class="voice-style-btn" data-style="cartoon" onclick="setVoiceStyle('cartoon')"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 L14 9 L20 11 L14 13 L12 19 L10 13 L4 11 L10 9 Z"/></svg> Мультяшный</button>
         </div>
       </div>
       <div class="settings-list-row action" onclick="previewVoice()">
-        <span class="label" style="color:var(--gold);">▶️ Проверить голос</span>
+        <span class="label" style="color:var(--gold);"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6,4 20,12 6,20"/></svg> Проверить голос</span>
       </div>
     </div>
 
@@ -430,11 +442,11 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
         <input type="text" id="site-link-input" placeholder="https://имя.github.io/репозиторий/" oninput="saveSiteLink()">
       </div>
       <div class="settings-list-row action" onclick="shareApp()">
-        <span class="label">📤 Поделиться приложением</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><line x1="8.3" y1="10.7" x2="15.7" y2="6.3"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/></svg> Поделиться приложением</span>
         <span class="arrow">→</span>
       </div>
       <div class="settings-list-row action" onclick="copySiteLink()">
-        <span class="label" style="color:var(--text);font-weight:400;">📋 Копировать ссылку</span>
+        <span class="label" style="color:var(--text);font-weight:400;"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="9" y="9" width="10" height="10" rx="2"/><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/></svg> Копировать ссылку</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -443,7 +455,7 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
     <div class="settings-group">
       <div class="settings-list-row">
         <span class="label">Академия Трейдинга</span>
-        <span class="value mono">v2.0</span>
+        <span class="value mono">v3.0</span>
       </div>
       <div class="settings-list-row">
         <span class="label">Модулей</span>
@@ -470,11 +482,11 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
         <input type="text" id="set-dev-name" placeholder="Не указано" oninput="saveDevName()">
       </div>
       <div class="settings-list-row action" onclick="mailDeveloper()">
-        <span class="label">✉️ Написать разработчику</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> Написать разработчику</span>
         <span class="arrow">→</span>
       </div>
       <div class="settings-list-row action" onclick="openDevGate()">
-        <span class="label">🔒 Панель разработчика</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Панель разработчика</span>
         <span class="arrow">войти →</span>
       </div>
     </div>
@@ -482,11 +494,11 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
     <div class="section-label mono">ДАННЫЕ</div>
     <div class="settings-group">
       <div class="settings-list-row action" onclick="exportProgressCode()">
-        <span class="label" style="color:var(--bull);">💾 Сохранить код прогресса</span>
+        <span class="label" style="color:var(--bull);"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M5 4h11l3 3v13H5z"/><rect x="8" y="4" width="7" height="5"/><rect x="8" y="14" width="8" height="5"/></svg> Сохранить код прогресса</span>
         <span class="arrow">→</span>
       </div>
       <div class="settings-list-row action" onclick="importProgressCode()">
-        <span class="label">📥 Восстановить по коду</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/><polyline points="8,10 12,14 16,10"/><line x1="12" y1="3" x2="12" y2="14"/></svg> Восстановить по коду</span>
         <span class="arrow">→</span>
       </div>
       <div class="settings-input-row" style="border-top:0.5px solid var(--border);">
@@ -495,7 +507,7 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
     </div>
     <div class="settings-group">
       <div class="settings-list-row action danger" onclick="resetProgress()">
-        <span class="label">↻ Сбросить прогресс</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><polyline points="3,17 3,21 7,21"/></svg> Сбросить прогресс</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -522,7 +534,7 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
       <div class="faint" style="max-width:260px;" id="devlock-sub">Пароль хранится только в этом браузере и не защищает от продвинутых пользователей — это просто скрытая от посторонних глаз панель.</div>
       <div class="pwd-row">
         <input type="password" id="devlock-input" class="calc-input" placeholder="Пароль" style="text-align:center;">
-        <button type="button" class="pwd-toggle" onclick="togglePwd('devlock-input', this)">👁</button>
+        <button type="button" class="pwd-toggle" onclick="togglePwd('devlock-input', this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
       </div>
       <div class="faint" style="color:var(--bear);display:none;" id="devlock-error">Неверный пароль</div>
       <button class="btn-primary" style="max-width:220px;margin-top:4px;" onclick="attemptDevLogin()" id="devlock-btn">Войти</button>
@@ -537,17 +549,17 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
     </div>
     <div class="settings-group">
       <div class="settings-list-row">
-        <span class="label" style="color:var(--bull);">🔓 Доступ открыт</span>
+        <span class="label" style="color:var(--bull);"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg> Доступ открыт</span>
       </div>
     </div>
 
     <div class="section-label mono">ВЕРСИЯ</div>
     <div class="settings-group">
       <div class="settings-list-row">
-        <span class="value mono" style="text-align:left;">v2.0 · HTML/CSS/JS · GitHub Pages · локальный профиль (без сервера и базы данных)</span>
+        <span class="value mono" style="text-align:left;">v3.0 · HTML/CSS/JS · GitHub Pages · локальный профиль (без сервера и базы данных)</span>
       </div>
       <div class="settings-list-row action" onclick="openGithubRepo()">
-        <span class="label">🐙 Открыть GitHub</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><line x1="20" y1="4" x2="11" y2="13"/><path d="M18 14v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5"/></svg> Открыть GitHub</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -560,17 +572,17 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
       <div class="settings-input-row">
         <div class="pwd-row">
           <input type="password" id="dev-newpass" placeholder="Новый пароль">
-          <button type="button" class="pwd-toggle" onclick="togglePwd('dev-newpass', this)">👁</button>
+          <button type="button" class="pwd-toggle" onclick="togglePwd('dev-newpass', this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
       </div>
       <div class="settings-list-row action" onclick="saveDevPassword()">
-        <span class="label" style="color:var(--bull);">💾 Сохранить пароль</span>
+        <span class="label" style="color:var(--bull);"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M5 4h11l3 3v13H5z"/><rect x="8" y="4" width="7" height="5"/><rect x="8" y="14" width="8" height="5"/></svg> Сохранить пароль</span>
       </div>
     </div>
 
     <div class="settings-group">
       <div class="settings-list-row action danger" onclick="lockDevPanel()">
-        <span class="label">🔒 Заблокировать панель</span>
+        <span class="label"><svg class="ui-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Заблокировать панель</span>
         <span class="arrow">→</span>
       </div>
     </div>
@@ -580,6 +592,13 @@ svg.candle-icon line, svg.candle-icon rect{transition:none;}
 
 <script>
 /* ============ DATA ============ */
+
+const ICON_SUN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="6.6" y2="6.6"/><line x1="17.4" y1="17.4" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.6" y2="17.4"/><line x1="17.4" y1="6.6" x2="19.1" y2="4.9"/></svg>';
+const ICON_MOON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>';
+const ICON_SPEAKER_ON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15"/><path d="M16 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const ICON_SPEAKER_OFF = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="4,9 8,9 12,5 12,19 8,15 4,15"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>';
+const ICON_EYE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+const ICON_EYE_OFF = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 10.6a3 3 0 0 0 4.2 4.2"/><path d="M6.6 6.7C4 8.3 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.7-1.2M17.9 17.9C20.4 16.1 22 12 22 12s-1.2-2.4-3.4-4.3"/></svg>';
 
 const MODULE_META = [
   { id: 1, title: "Основы рынка", topics: ["Биржа", "Участники", "Активы", "Комиссии"] },
@@ -600,7 +619,7 @@ function thresholdFor(id){ return PASS_THRESHOLD[id] || 70; }
 const LESSONS = {
   1: [
     { sub:"Что такое биржа", h: "Что такое биржа", b: "Биржа — это организованная площадка, где встречаются покупатели и продавцы. Цена рождается из баланса спроса и предложения: чем больше желающих купить, тем выше цена, и наоборот.", icon: "building" },
-    { sub:"Что такое биржа", h: "Внебиржевой рынок (OTC)", b: "Не все активы торгуются на единой централизованной площадке. OTC (over-the-counter, «внебиржевой») — это сеть прямых сделок между участниками напрямую, без общей книги заявок и единого места торгов. Форекс — классический пример: у него нет одной «биржи валют», сделки идут через сеть банков и брокеров по всему миру.", icon: "network" },
+    { sub:"Что такое биржа", h: "Внебиржевой рынок (OTC)", b: "Не все активы торгуются на единой централизованной площадке. OTC (over-the-counter, «внебиржевой») — это сеть прямых сделок между участниками напрямую, без общей книги заявок и единого места торгов. Форекс — классический пример: у него нет одной «биржи валют», сделки идут через сеть банков и брокеров по всему миру.", icon: "network", callout: { title: "OTC вживую", text: "В приложении «Время Деньги» есть отдельная живая панель именно для OTC-рынка — видно его состояние прямо сейчас, круглосуточно.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
     { sub:"Участники рынка", h: "Кто участники рынка", b: "Маркетмейкеры обеспечивают ликвидность, постоянно выставляя заявки на покупку и продажу. Институциональные инвесторы (фонды, банки) двигают рынок крупными объёмами. Розничные трейдеры — вроде вас — торгуют небольшими объёмами, но составляют значительную часть общего оборота.", icon: "people" },
     { sub:"Участники рынка", h: "Виды активов", b: "Акции, валютные пары, товары (золото, нефть), криптовалюты, индексы — у каждого класса активов своя логика движения цены, своя волатильность и свои часы наибольшей активности.", icon: "assetGrid" },
     { sub:"Валютные пары", h: "Валютные пары", b: "На Форексе валюты торгуются парами, например EUR/USD. Первая валюта — базовая, вторая — котируемая. Курс 1.0850 значит: за 1 евро дают 1.0850 доллара.", icon: "currencySwap" },
@@ -609,6 +628,10 @@ const LESSONS = {
     { sub:"Криптовалюты", h: "Криптовалюты", b: "Криптовалюты торгуются 24/7 на децентрализованных и централизованных биржах. Их цена особенно чувствительна к новостям и настроению участников рынка.", icon: "coin" },
     { sub:"Комиссии и спред", h: "Биржевой стакан", b: "Стакан заявок показывает, сколько покупателей и продавцов стоят по разным ценам прямо сейчас. Чем больше заявок сосредоточено в стакане — тем выше ликвидность актива.", icon: "orderBook" },
     { sub:"Комиссии и спред", h: "Комиссии, спред и проскальзывание", b: "Спред — разница между ценой покупки и продажи, скрытая издержка каждой сделки. Проскальзывание — когда сделка исполняется не по той цене, что вы видели на экране, обычно на волатильном рынке. Оба фактора незаметно съедают прибыль новичков.", icon: "spread" },
+    { sub:"Типы ордеров", h: "Рыночный и лимитный ордер", b: "Рыночный ордер (market order) исполняется немедленно по лучшей доступной цене — вы гарантированно входите в сделку, но не контролируете точную цену. Лимитный ордер (limit order) исполняется только по указанной цене или лучше — вы контролируете цену, но сделка может вообще не состояться, если рынок до неё не дойдёт.", icon: "marketVsLimit" },
+    { sub:"Типы ордеров", h: "Стоп-ордер и стоп-лимит", b: "Стоп-ордер (stop order) превращается в рыночный, как только цена достигает заданного уровня — используется для стоп-лоссов и для входа на пробое. Стоп-лимит работает так же, но после срабатывания выставляет не рыночный, а лимитный ордер — точнее по цене, но с риском вообще не исполниться на быстром движении.", icon: "stopTrigger" },
+    { sub:"Торговые сессии", h: "Торговые сессии", b: "Форекс торгуется 24 часа в сутки через три основные сессии: азиатскую, европейскую (Лондон) и американскую (Нью-Йорк). Волатильность обычно выше всего в часы пересечения сессий — например, когда открывается Нью-Йорк и ещё не закрылся Лондон.", icon: "sessionsClock" },
+    { sub:"Торговые сессии", h: "Какая сессия когда активна", b: "Азиатская сессия обычно спокойнее — хороша для боковых стратегий. Европейская даёт основной объём движения по большинству валютных пар. Американская, особенно на пересечении с европейской, часто самая волатильная — именно тогда выходит и большинство важных новостей США.", icon: "clock", callout: { title: "Посмотреть вживую", text: "В приложении «Время Деньги» есть живые часы сессий — видно прямо сейчас, какая сессия активна и насколько она сильная.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
   ],
   2: [
     { sub:"Типы графиков", h: "Типы графиков", b: "Линейный график показывает только цены закрытия — просто, но мало деталей. Бары и японские свечи показывают ещё и максимум, минимум, открытие — гораздо больше информации о характере движения за период.", icon: "chartTypes" },
@@ -618,6 +641,10 @@ const LESSONS = {
     { sub:"Анатомия свечи", h: "Тело свечи", b: "Тело — это расстояние между ценой открытия и закрытия. Чем длиннее тело, тем сильнее было движение за этот период.", icon: "candleBody" },
     { sub:"Анатомия свечи", h: "Тени", b: "Тени показывают, куда цена заходила, но не удержалась. Длинная верхняя тень — покупатели пытались толкнуть цену выше, но продавцы её отбили.", icon: "candleWick" },
     { sub:"Объём торгов", h: "Объём торгов", b: "Объём показывает, сколько сделок было заключено за период. Пробой уровня на большом объёме — надёжный сигнал, тот же пробой на слабом объёме чаще оказывается ложным.", icon: "volumeBars" },
+    { sub:"Гэпы", h: "Гэпы (разрывы цены)", icon: "gapIcon", b: "Гэп — разрыв между закрытием одной свечи и открытием следующей, без сделок в промежутке. Обычно возникает на открытии биржи после ночи или выходных, либо на неожиданных новостях. Небольшие гэпы часто «закрываются» — цена возвращается и заполняет разрыв в ближайшее время." },
+    { sub:"Гэпы", h: "Гэп на пробое против гэпа на истощении", icon: "gapIcon", b: "Гэп в начале сильного движения (breakaway gap) часто не закрывается долго — он подтверждает новый тренд. Гэп в конце длинного движения (exhaustion gap) наоборот, часто сигнализирует об истощении тренда и близком развороте. Разница определяется контекстом, а не самим фактом разрыва." },
+    { sub:"Внутренний и внешний бар", h: "Внутренний бар (Inside Bar)", icon: "insideBar", b: "Внутренний бар — свеча, чей диапазон (от максимума до минимума) полностью укладывается внутри диапазона предыдущей свечи. Означает паузу, сжатие волатильности перед следующим движением — часто предшествует пробою в любую сторону." },
+    { sub:"Внутренний и внешний бар", h: "Внешний бар (Outside Bar)", icon: "outsideBar", b: "Внешний бар — противоположность внутреннего: его диапазон полностью перекрывает диапазон предыдущей свечи и с высокой, и с низкой стороны. Показывает резкий всплеск волатильности и часто сигнализирует о развороте, особенно после длительного движения в одну сторону." },
     { sub:"Анатомия свечи", h: "Бычья свеча", b: "Если закрытие выше открытия — свеча бычья (обычно зелёная). Это значит, что за период покупатели победили продавцов.", patternCandle: "BULL_SOLO", badge: {t:"bull", label:"Бычья"} },
     { sub:"Анатомия свечи", h: "Медвежья свеча", b: "Если закрытие ниже открытия — свеча медвежья (обычно красная). Продавцы оказались сильнее покупателей.", patternCandle: "BEAR_SOLO", badge: {t:"bear", label:"Медвежья"} },
     { sub:"Тренд в реальном времени", h: "Тренд в реальном времени", b: "Смотрите, как рынок «пишет» тренд свеча за свечой — каждая новая подтверждает или ломает предыдущую картину. Именно так трейдер читает график вживую, а не по готовому изображению.", type: "trendbuild" },
@@ -630,6 +657,10 @@ const LESSONS = {
     { sub:"Свечные паттерны", h: "Медвежье поглощение (Engulfing)", b: "Зеркальная ситуация: небольшая бычья свеча, за которой идёт крупная медвежья, полностью перекрывающая её тело. Продавцы резко и убедительно взяли верх.", patternCandle: "ENGULF_BEAR", badge: {t:"bear", label:"Сильный медвежий сигнал"} },
     { sub:"Свечные паттерны", h: "Харами (Harami)", b: "Крупная свеча, а внутри её тела — маленькая свеча противоположного цвета, будто «беременная» (harami по-японски). Показывает, что импульс предыдущей свечи резко ослаб — рынок засомневался.", patternCandle: "HARAMI_BULL", badge: {t:"neutral", label:"Ослабление импульса"} },
     { sub:"Свечные паттерны", h: "Марибозу (Marubozu)", b: "Свеча вообще без теней или с минимальными тенями — цена шла в одну сторону от открытия до закрытия без остановок. Показывает полный, безоговорочный контроль одной из сторон за весь период.", patternCandle: "MARUBOZU_BULL", badge: {t:"bull", label:"Полный контроль покупателей"} },
+    { sub:"Многосвечные паттерны", h: "Три белых солдата", b: "Три бычьи свечи подряд, каждая закрывается выше предыдущей, с небольшими тенями. Показывает устойчивое, последовательное давление покупателей — более надёжный сигнал продолжения роста, чем одна отдельная свеча.", patternCandle: "THREE_SOLDIERS", badge: {t:"bull", label:"Устойчивый рост"} },
+    { sub:"Многосвечные паттерны", h: "Три чёрных вороны", b: "Зеркальный паттерн: три медвежьи свечи подряд, каждая закрывается ниже предыдущей. Устойчивое давление продавцов на протяжении нескольких периодов — надёжнее одиночной медвежьей свечи.", patternCandle: "THREE_CROWS", badge: {t:"bear", label:"Устойчивое падение"} },
+    { sub:"Многосвечные паттерны", h: "Утренняя звезда", b: "Разворотный паттерн из трёх свечей на дне тренда: крупная медвежья свеча, затем маленькая свеча с гэпом вниз (нерешительность), затем крупная бычья свеча, закрывающаяся глубоко в теле первой. Один из самых надёжных сигналов разворота вверх.", patternCandle: "MORNING_STAR", badge: {t:"bull", label:"Разворот вверх"} },
+    { sub:"Многосвечные паттерны", h: "Вечерняя звезда", b: "Зеркало утренней звезды на вершине тренда: крупная бычья свеча, маленькая свеча с гэпом вверх, затем крупная медвежья свеча, закрывающаяся глубоко в теле первой. Один из самых надёжных сигналов разворота вниз.", patternCandle: "EVENING_STAR", badge: {t:"bear", label:"Разворот вниз"} },
   ],
   3: [
     { sub:"Тренды и структура", h: "Восходящий тренд", b: "Цена формирует последовательно более высокие максимумы и более высокие минимумы. Покупатели контролируют рынок — на графике это лестница ступенек вверх.", icon: "trendUp" },
@@ -646,24 +677,36 @@ const LESSONS = {
     { sub:"Графические фигуры", h: "Двойное дно", b: "Зеркало двойной вершины: цена дважды отталкивается от одного минимума. Сигнал возможного разворота тренда вверх.", icon: "doubleBottom" },
     { sub:"Графические фигуры", h: "Флаг", b: "Короткая консолидация в узком канале против направления сильного движения. Часто заканчивается продолжением исходного тренда.", icon: "flagPattern" },
     { sub:"Графические фигуры", h: "Треугольник", b: "Сужающийся диапазон цены между сходящимися линиями поддержки и сопротивления. Обычно разрешается резким движением в одну из сторон.", icon: "trianglePattern" },
-    { sub:"Индикаторы", h: "RSI наглядно", b: "Стрелка показывает, как RSI движется между зонами: ниже 30 — рынок перепродан, выше 70 — перекуплен. Между ними — нейтральная зона, где сигнал индикатора слабее.", type: "rsigauge" },
-    { sub:"Индикаторы", h: "Трендовые индикаторы vs осцилляторы", b: "Трендовые индикаторы (скользящие средние, MACD) следуют за направлением движения и подтверждают тренд. Осцилляторы (RSI, Stochastic) измеряют перекупленность/перепроданность и лучше работают в боковике. Понимание этого разделения помогает не путать сигналы.", icon: "vsCompare" },
-    { sub:"Индикаторы", h: "RSI", b: "Индекс относительной силы (0–100) показывает, перекуплен или перепродан актив. Значения выше 70 — возможная перекупленность, ниже 30 — возможная перепроданность.", icon: "rsiChart" },
+        { sub:"Индикаторы", h: "Трендовые индикаторы vs осцилляторы", b: "Трендовые индикаторы (скользящие средние, MACD) следуют за направлением движения и подтверждают тренд. Осцилляторы (RSI, Stochastic) измеряют перекупленность/перепроданность и лучше работают в боковике. Понимание этого разделения помогает не путать сигналы.", icon: "vsCompare" },
+            { sub:"Индикаторы", h: "RSI", b: "Индекс относительной силы (0–100) показывает, перекуплен или перепродан актив. Значения выше 70 — возможная перекупленность, ниже 30 — возможная перепроданность.", icon: "rsiChart" },
+{ sub:"Индикаторы", h: "RSI наглядно", b: "Стрелка показывает, как RSI движется между зонами: ниже 30 — рынок перепродан, выше 70 — перекуплен. Между ними — нейтральная зона, где сигнал индикатора слабее.", type: "rsigauge" },
     { sub:"Индикаторы", h: "MACD", b: "Индикатор схождения-расхождения скользящих средних. Состоит из двух линий и гистограммы их разницы. Пересечение линий часто используют как сигнал смены импульса.", icon: "macd" },
     { sub:"Индикаторы", h: "Bollinger Bands и Stochastic", b: "Полосы Боллинджера показывают волатильность через «коридор» вокруг средней цены. Stochastic Oscillator — ещё один измеритель перекупленности/перепроданности, сравнивающий цену закрытия с недавним диапазоном.", icon: "bandsChart" },
+{ sub:"Скользящие средние", h: "Скользящая средняя (Moving Average)", icon: "maLine", b: "Скользящая средняя сглаживает цену, показывая среднее значение за последние N периодов, и обновляется на каждой новой свече. Простая (SMA) считает все периоды с равным весом. Экспоненциальная (EMA) отдаёт больше веса свежим ценам — быстрее реагирует на смену направления, но и чаще даёт ложные сигналы на шумном рынке." },
+{ sub:"Скользящие средние", h: "Пересечение скользящих средних", icon: "maCross", b: "Когда быстрая скользящая средняя пересекает медленную снизу вверх — это называют «золотым крестом», сигнал на покупку. Обратное пересечение сверху вниз — «крест смерти», сигнал на продажу. Такие пересечения запаздывают относительно самого разворота, зато реже дают ложные сигналы, чем мгновенная реакция на цену." },
     { sub:"Мультитаймфрейм анализ", h: "Анализ на нескольких таймфреймах", b: "Сигнал на 5-минутном графике и на дневном может противоречить друг другу. Правило: сначала смотрите на старший таймфрейм для общего направления, затем на младший — для точной точки входа. Так вы не идёте против крупного тренда ради мелкого сигнала.", icon: "multiTimeframe" },
+    { sub:"Уровни Фибоначчи", h: "Уровни Фибоначчи", icon: "fibLevels", b: "После сильного движения цена часто откатывает назад перед продолжением — и делает это не хаотично, а часто останавливается у характерных уровней: 23.6%, 38.2%, 50% и 61.8% от размера предыдущего движения. Трейдеры заранее отмечают эти уровни как вероятные зоны разворота отката." },
+    { sub:"Уровни Фибоначчи", h: "Как использовать Фибоначчи на практике", icon: "fibLevels", b: "Сетку тянут от начала движения до его пика (или дна). Уровень 61.8% считается самым значимым — глубокий откат к нему, за которым следует возобновление тренда, называют «золотым сечением». Фибоначчи работает лучше как дополнительное подтверждение зоны, а не как самостоятельный сигнал сам по себе." },
+    { sub:"Дивергенция", h: "Дивергенция RSI", icon: "divergence", b: "Дивергенция — когда цена и индикатор показывают разное. Медвежья дивергенция: цена делает новый максимум, а RSI — нет (более низкий пик) — сигнал ослабления восходящего движения. Бычья дивергенция — зеркально: цена делает новый минимум, а RSI — более высокий, то есть слабее предыдущего падения." },
+    { sub:"Дивергенция", h: "Почему дивергенция работает", icon: "divergence", b: "Дивергенция показывает, что импульс движения слабеет, даже если сама цена ещё растёт или падает. Это одно из немногих предупреждений о развороте, которое появляется до того, как разворот виден на самом ценовом графике — поэтому её так ценят опытные трейдеры." },
+    { sub:"ATR", h: "ATR — измеритель волатильности", icon: "atrIcon", b: "Average True Range (ATR) показывает средний размах движения цены за период — не направление, а именно амплитуду. Высокий ATR значит рынок волатильный, движения крупные; низкий ATR — рынок спокоен, движения мелкие." },
+    { sub:"ATR", h: "Зачем ATR трейдеру", icon: "atrIcon", b: "ATR часто используют для расстановки стоп-лосса: слишком близкий стоп на волатильном активе выбьет вас случайным шумом ещё до того, как идея успеет сработать. Стоп на расстоянии 1.5–2 ATR от входа учитывает реальную амплитуду актива, а не произвольное число процентов." },
   ],
   4: [
-    { sub:"Экономический календарь", h: "Экономический календарь", b: "Экономический календарь — список дат публикации важной статистики: решения по ставкам центробанков, данные по инфляции, занятости. Перед такими датами трейдеры часто снижают активность — волатильность резко растёт в момент выхода новости.", icon: "calendar" },
+    { sub:"Экономический календарь", h: "Экономический календарь", b: "Экономический календарь — список дат публикации важной статистики: решения по ставкам центробанков, данные по инфляции, занятости. Перед такими датами трейдеры часто снижают активность — волатильность резко растёт в момент выхода новости.", icon: "calendar", callout: { title: "Живой календарь новостей", text: "В приложении «Время Деньги» есть постоянно обновляющийся календарь новостей высокой волатильности на неделю вперёд.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
     { sub:"Экономический календарь", h: "Как читать календарь на практике", b: "У каждого события есть уровень важности (обычно обозначен цветом или количеством звёзд): высокий, средний, низкий. Рядом с фактом всегда указан прогноз (consensus) и предыдущее значение. За 15–30 минут до события с высокой важностью многие трейдеры закрывают часть позиций или расширяют стоп — резкий скачок может выбить из сделки на пустом месте.", icon: "checklist" },
     { sub:"Новости и волатильность", h: "Как новости двигают цену", b: "Рынок торгует ожиданиями: цена часто уже заранее отражает то, что все и так ожидали. Настоящее движение возникает, когда фактические цифры отличаются от прогноза — тогда спред расширяется, а цена делает резкий скачок в любую сторону.", icon: "newsSpike" },
     { sub:"Новости и волатильность", h: "Пример реакции рынка", b: "Допустим, рынок ждёт инфляцию 3,0%. Публикуют факт — 3,4%. Инфляция выше ожиданий обычно означает более жёсткую политику центробанка в будущем — валюта чаще всего резко укрепляется в первые минуты. Если бы факт совпал с прогнозом (3,0%), движение было бы слабым — сюрприза не случилось.", icon: "newsSpike" },
     { sub:"Отчётность компаний", h: "Отчётность компаний", b: "Публичные компании раз в квартал публикуют финансовый отчёт: выручку, прибыль, прогнозы. Цена акции может упасть даже при росте прибыли, если результаты оказались хуже ожиданий рынка — важны не сами цифры, а их отличие от прогноза.", icon: "report" },
     { sub:"Отчётность компаний", h: "Сезон отчётностей", b: "Несколько раз в год большинство крупных компаний публикует отчёты почти одновременно — это называют «сезоном отчётностей». В эти недели волатильность по акциям обычно выше обычной, а прогнозы компании на следующий квартал (guidance) часто двигают цену сильнее, чем уже прошедший период.", icon: "calendar" },
-    { sub:"Макропоказатели", h: "Ключевые макропоказатели", b: "Ставка центробанка влияет на привлекательность валюты. Инфляция (CPI) показывает рост цен в экономике. ВВП измеряет размер экономики. Все три показателя двигают не только валютные пары, но и весь рынок акций и сырья.", icon: "macroBars" },
+    { sub:"Макропоказатели", h: "Ключевые макропоказатели", b: "Ставка центробанка напрямую влияет на привлекательность валюты: неожиданное повышение ставки обычно валюту укрепляет (растёт доходность для капитала), неожиданное понижение — ослабляет. Инфляция (CPI) показывает рост цен в экономике. ВВП измеряет размер экономики. Все три показателя двигают не только валютные пары, но и весь рынок акций и сырья.", icon: "macroBars" },
     { sub:"Макропоказатели", h: "Занятость и деловая активность", b: "Отчёт по занятости (в США — Non-Farm Payrolls, NFP) показывает, сколько новых рабочих мест создано за месяц — один из самых волатильных релизов месяца. Индекс деловой активности (PMI) выше 50 означает рост сектора экономики, ниже 50 — спад. Оба показателя дают раннее представление о здоровье экономики ещё до выхода полного ВВП.", icon: "macroBars" },
     { sub:"Макропоказатели", h: "Корреляции между активами", b: "Активы часто двигаются не изолированно. Рост доллара обычно давит на цену золота (оно котируется в долларах). Рост цен на нефть поддерживает валюты нефтедобывающих стран. Рост ставок обычно давит на акции роста, но поддерживает курс валюты. Понимание таких связей помогает не удивляться, когда несвязанные на первый взгляд активы двигаются синхронно.", icon: "correlation" },
     { sub:"Макропоказатели", h: "Геополитика и форс-мажоры", b: "Войны, санкции, стихийные бедствия — редкие события, которые не попадают в календарь, но двигают рынок сильнее плановой статистики. В такие моменты капитал часто перетекает в «защитные активы» — золото, доллар, гособлигации — а рискованные активы (акции, крипто) обычно проседают.", icon: "globe" },
+    { sub:"Валютный керри-трейд", h: "Процентные ставки и керри-трейд", icon: "percent", b: "Керри-трейд — стратегия, где занимают валюту с низкой процентной ставкой и вкладывают в валюту с высокой ставкой, зарабатывая на разнице. Именно поэтому решения центробанков о ставке так сильно двигают валютные пары — они меняют привлекательность валюты для этой стратегии." },
+    { sub:"Оценка компаний", h: "P/E и капитализация компании", icon: "report", b: "Капитализация — цена акции, умноженная на число акций в обращении, показывает размер компании целиком. P/E (цена/прибыль) показывает, сколько лет потребуется компании, чтобы окупить свою текущую цену прибылью — высокий P/E означает, что рынок ждёт быстрого роста, низкий — что рост уже не ожидается или компания недооценена." },
+    { sub:"Крипто-фундаментал", h: "Халвинг и ончейн-метрики", icon: "coin", b: "У биткоина раз в четыре года происходит халвинг — вознаграждение за добычу новых монет уменьшается вдвое, снижая приток новых монет на рынок. Ончейн-метрики (число активных кошельков, объём переводов в блокчейне) дают крипто-трейдерам данные о реальном использовании сети, недоступные для традиционных активов." },
+    { sub:"Сезонность", h: "Сезонность рынка", icon: "calendar", b: "Некоторые активы статистически ведут себя по-разному в зависимости от календарного периода. Известный пример на фондовом рынке — поговорка «Sell in May and go away»: летние месяцы исторически слабее для акций США, чем осенне-зимний период. Сезонность — это статистическая тенденция по прошлым данным, а не гарантия на будущее, и никогда не должна быть единственной причиной для сделки.", callout: { title: "Календарь сезонов", text: "В приложении «Время Деньги» есть отдельный раздел сезонности — какой сейчас сезон, его характер и сколько дней до следующего.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
   ],
   5: [
     { sub:"Зачем нужна стратегия", h: "Зачем нужна стратегия", b: "Стратегия — это набор чётких правил: когда входить в сделку, где ставить стоп и цель, каким объёмом торговать. Без стратегии трейдер каждый раз решает заново, под влиянием эмоций момента — это прямой путь к хаотичным результатам.", icon: "compass" },
@@ -676,9 +719,12 @@ const LESSONS = {
     { sub:"Backtesting", h: "Backtesting", b: "Прежде чем рисковать реальными деньгами, стратегию проверяют на исторических данных — смотрят, как она сработала бы в прошлом. Backtesting не гарантирует будущий результат, но помогает отсеять заведомо слабые идеи и понять типичную просадку стратегии.", icon: "rewind" },
     { sub:"Торговый план", h: "Торговый план и чек-лист входа", b: "Письменный список условий, которые должны совпасть, прежде чем открыть сделку: подтверждённый тренд, чёткий уровень, приемлемое соотношение риск/прибыль. Чек-лист заменяет решение «на эмоциях» решением «по правилам», написанным заранее в спокойном состоянии.", icon: "checklist" },
     { sub:"Виды стратегий", h: "Как выбрать стратегию под себя", b: "Смотрите на три вещи: сколько времени вы реально готовы уделять рынку каждый день, насколько спокойно переносите серию мелких убытков подряд, и на каком рынке торгуете. Не обязательно выбирать одну стратегию навсегда.", icon: "compass" },
+    { sub:"Механическая стратегия", h: "Пример: система на пересечении скользящих средних", icon: "maCross", b: "Классический пример полностью механической стратегии: покупать, когда быстрая скользящая средняя пересекает медленную снизу вверх, и закрывать позицию (или продавать) при обратном пересечении. Правила однозначны и не требуют интуиции — именно такие стратегии проще всего протестировать на исторических данных." },
+    { sub:"Переподгонка", h: "Переподгонка при бэктестинге", icon: "puzzle", b: "Переподгонка (curve fitting) — когда стратегию слишком точно подгоняют под прошлые данные, добавляя всё больше условий и фильтров, пока результат на истории не станет идеальным. Такая стратегия обычно проваливается на новых данных — она выучила случайный шум прошлого, а не настоящую закономерность." },
+    { sub:"Стиль торговли", h: "Дневная торговля и позиционная торговля", icon: "clock", b: "Дневной трейдер закрывает все позиции до конца торгового дня, не оставляя риск на ночь. Позиционный трейдер держит сделки неделями и месяцами, ориентируясь на крупные фундаментальные тренды и почти не обращая внимания на внутридневной шум. Это разные профессии по темпу жизни, а не просто разная длина сделки." },
   ],
   6: [
-    { sub:"Риск на сделку", h: "Риск на сделку", b: "Профессионалы обычно рискуют не больше 1–2% от депозита в одной сделке. Так одна неудачная сделка не наносит критического урона капиталу.", icon: "percent" },
+    { sub:"Риск на сделку", h: "Риск на сделку", b: "Профессионалы обычно рискуют не больше 1–2% от депозита в одной сделке. Так одна неудачная сделка не наносит критического урона капиталу.", icon: "percent", callout: { title: "Сколько реально зарабатывать", text: "В приложении «Время Деньги» есть калькулятор цели: сколько нужно зарабатывать в день, чтобы выйти на желаемый доход в месяц или год при вашем депозите.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
     { sub:"Риск на сделку", h: "Почему именно 1–2%, а не больше", b: "При риске 2% на сделку 10 убытков подряд заберут около 18% депозита — неприятно, но восстановимо. При риске 10% на сделку те же 10 убытков подряд заберут больше 65% — почти весь капитал. Серии из 10 убытков подряд случаются даже у прибыльных стратегий, поэтому маленький риск на сделку — это защита от статистически нормальной, а не исключительной ситуации." },
     { sub:"Размер позиции", h: "Размер позиции", b: "Размер сделки рассчитывается от расстояния до стоп-лосса и допустимого риска в деньгах, а не «на глаз». Чем дальше стоп — тем меньше объём позиции." },
     { sub:"Размер позиции", h: "Плечо и маржин-колл", b: "Плечо (leverage) позволяет открыть позицию больше собственного депозита, занимая разницу у брокера — прибыль и убыток при этом умножаются пропорционально плечу. Если убыток съедает депозит до критического уровня, брокер принудительно закрывает позиции — это называется маржин-колл. Чем выше плечо, тем ближе этот уровень к цене входа.", icon: "leverage" },
@@ -687,6 +733,9 @@ const LESSONS = {
     { sub:"Просадка депозита", h: "Просадка и восстановление депозита", b: "Просадка 20% требует роста на 25%, чтобы отыграться. Но просадка 50% требует роста уже на 100% — вдвое! Чем глубже просадка, тем непропорционально тяжелее восстановление. Именно поэтому контроль риска на каждой отдельной сделке так критичен в долгосрочной перспективе.", icon: "drawdown" },
     { sub:"Просадка депозита", h: "Дневной лимит убытка", b: "Многие профессиональные трейдеры заранее устанавливают лимит: например, «минус 5% за день — торговля закрыта до завтра». Это защищает от «отыгрыша» на эмоциях, когда одна неудачная сделка провоцирует ещё несколько подряд, только хуже обдуманных.", icon: "stopSign" },
     { sub:"Просадка депозита", h: "Снижение риска после серии убытков", b: "После нескольких убытков подряд разумно временно снизить риск на сделку — например, вдвое — пока не вернётся уверенность и стабильность результатов. Это не «трусость», а способ остаться в игре достаточно долго, чтобы полоса неудач закончилась.", icon: "shrink" },
+    { sub:"Критерий Келли", h: "Критерий Келли", icon: "percent", b: "Формула Келли рассчитывает теоретически оптимальный размер ставки исходя из вашего процента выигрышных сделок и среднего соотношения прибыли к убытку. На практике трейдеры почти никогда не используют полный размер по Келли — слишком агрессивно и чувствительно к ошибкам в оценке своей статистики." },
+    { sub:"Критерий Келли", h: "Половинный Келли", icon: "percent", b: "Многие профессионалы используют «половину Келли» или даже четверть — это заметно снижает волатильность результата, жертвуя лишь небольшой частью теоретического роста капитала. Смысл не в точной формуле, а в самой идее: размер ставки должен зависеть от реального преимущества стратегии, а не быть одинаковым всегда." },
+    { sub:"Портфельный риск", h: "Риск на уровне всего портфеля", icon: "correlation", b: "Риск 1% на сделку — это риск ОДНОЙ позиции. Если открыто пять сделок одновременно, суммарный риск портфеля может быть намного выше 1%, особенно если позиции связаны между собой (коррелируют). Важно следить не только за риском отдельной сделки, но и за суммарным риском по всем открытым позициям сразу." },
   ],
   7: [
     { sub:"Страх и жадность", h: "Страх и жадность", b: "Страх и жадность — главные причины отклонения от плана. Страх заставляет закрывать прибыльные сделки слишком рано, жадность — держать убыточные слишком долго в надежде на разворот.", icon: "masks" },
@@ -702,7 +751,8 @@ const LESSONS = {
   ],
   8: [
     { sub:"Демо-счёт", h: "Демо-счёт: как тренироваться правильно", b: "Главная ошибка новичков — торговать на демо-счёте иначе, чем торговали бы на реальные деньги: без риск-менеджмента, наугад, огромными объёмами. Такая практика не переносится на реальный счёт. Относитесь к демо-счёту точно так же серьёзно, с теми же правилами, что применили бы к своим деньгам.", icon: "screen" },
-    { sub:"Торговый журнал", h: "Торговый журнал", b: "После каждой сделки полезно записывать: почему вошли, где был стоп и цель, что чувствовали в момент решения, каким оказался результат. Со временем журнал честно показывает повторяющиеся ошибки — то, что сложно заметить, если просто помнить сделки в голове.", icon: "journal" },
+    { sub:"Продажа в короткую", h: "Что такое короткая сделка (short)", b: "Продажа в короткую (short, шорт) — это ставка на падение цены: вы продаёте актив, которого у вас нет (берёте его в долг у брокера), а затем откупаете дешевле, забирая разницу себе. Логика зеркальна покупке: вход у сопротивления, стоп выше сопротивления, цель — ближайшая поддержка снизу.", icon: "trendDown" },
+    { sub:"Торговый журнал", h: "Торговый журнал", b: "После каждой сделки полезно записывать: почему вошли, где был стоп и цель, что чувствовали в момент решения, каким оказался результат. Со временем журнал честно показывает повторяющиеся ошибки — то, что сложно заметить, если просто помнить сделки в голове.", icon: "journal", callout: { title: "Готовый журнал", text: "В приложении «Время Деньги» уже есть готовый журнал: календарь по дням, прибыль и убыток, винрейт и лимит убытка на день.", url: "https://vda85mail-design.github.io/vremya-dengi/tradeclock.html", label: "Открыть «Время Деньги» →" } },
   ],
 };
 
@@ -712,6 +762,10 @@ const QUIZZES = {
     { q: "Что определяет цену на бирже?", opts: ["Решение правительства", "Баланс спроса и предложения", "Курс валют вчера", "Погода"], a: 1, exp: "Когда покупателей больше, чем продавцов, цена растёт; когда продавцов больше — падает. Это базовый механизм ценообразования на любой бирже." },
     { q: "OTC (внебиржевой рынок) — это", opts: ["Сеть прямых сделок между участниками без единой централизованной площадки", "Другое название биржи", "Тип ордера", "Комиссия брокера"], a: 0, exp: "В отличие от биржи здесь нет единой книги заявок — сделки идут напрямую между участниками." },
     { q: "Форекс является примером", opts: ["OTC-рынка", "Единой мировой биржи", "Товарной биржи", "Рынка облигаций"], a: 0, exp: "У Форекса нет одной центральной «биржи валют» — торговля идёт через сеть банков и брокеров по всему миру." },
+    { q: "Рыночный ордер (market order)", opts: ["Исполняется немедленно по лучшей доступной цене", "Исполняется только по заранее указанной цене", "Никогда не исполняется сразу", "Используется только для крипты"], a: 0, exp: "Вы гарантированно входите в сделку, но не контролируете точную цену исполнения." },
+    { q: "Лимитный ордер (limit order)", opts: ["Исполняется только по указанной цене или лучше", "Всегда исполняется мгновенно", "Не позволяет контролировать цену", "Работает только на бирже акций"], a: 0, exp: "Даёт контроль над ценой, но сделка может вообще не состояться, если рынок до неё не дойдёт." },
+    { q: "Стоп-ордер превращается в рыночный ордер, когда", opts: ["Цена достигает заданного уровня", "Наступает полночь", "Меняется брокер", "Заканчивается спред"], a: 0, exp: "Стоп-ордер часто используют и для стоп-лоссов, и для входа на пробое уровня." },
+    { q: "Волатильность на Форексе обычно выше всего", opts: ["В часы пересечения торговых сессий", "Ровно в полночь по Гринвичу", "Только по выходным", "В момент открытия азиатской сессии"], a: 0, exp: "Например, когда открывается Нью-Йорк, а Лондон ещё не закрылся — обе сессии активны одновременно." },
     { q: "Кто такие маркетмейкеры?", opts: ["Участники, обеспечивающие ликвидность постоянными заявками", "Государственные регуляторы", "Только частные трейдеры", "Разработчики бирж"], a: 0, exp: "Маркетмейкеры постоянно выставляют заявки на покупку и продажу, обеспечивая рынку ликвидность." },
     { q: "В паре EUR/USD какая валюта базовая?", opts: ["USD", "EUR", "Обе одновременно", "Ни одна"], a: 1, exp: "Первая валюта в паре всегда базовая. Курс показывает, сколько котируемой валюты (USD) стоит 1 единица базовой (EUR)." },
     { q: "Что вы получаете, покупая акцию?", opts: ["Долг компании", "Долю владения компанией", "Валюту страны", "Индекс рынка"], a: 1, exp: "Акция — это именно доля собственности. Владелец акции формально совладелец компании." },
@@ -745,6 +799,15 @@ const QUIZZES = {
     { q: "Какой паттерн изображён на графике?", opts: ["Молот", "Марибозу", "Падающая звезда или перевёрнутый молот", "Доджи"], a: 2, patternDiagram: "STAR", exp: "Маленькое тело снизу и длинная верхняя тень — форма падающей звезды." },
     { q: "Какой паттерн изображён на графике?", opts: ["Доджи", "Бычье поглощение", "Молот", "Марибозу"], a: 1, patternDiagram: "ENGULF_BULL", exp: "Маленькая красная свеча, полностью перекрытая крупной зелёной — бычье поглощение." },
     { q: "Какой паттерн изображён на графике?", opts: ["Марибозу", "Доджи", "Харами", "Падающая звезда"], a: 0, patternDiagram: "MARUBOZU_BULL", exp: "Крупное тело почти без теней — марибозу." },
+    { q: "«Три белых солдата» — это", opts: ["Три бычьи свечи подряд, каждая закрывается выше предыдущей", "Одна крупная свеча без теней", "Три свечи с одинаковым закрытием", "Паттерн, встречающийся только на дневном графике"], a: 0, exp: "Показывает устойчивое, последовательное давление покупателей на протяжении нескольких периодов." },
+    { q: "«Три чёрных вороны» сигнализируют о", opts: ["Устойчивом давлении продавцов на протяжении нескольких периодов", "Развороте вверх", "Отсутствии тренда", "Высокой ликвидности"], a: 0, exp: "Зеркальный паттерн к трём белым солдатам — три медвежьи свечи подряд, каждая ниже предыдущей." },
+    { q: "Утренняя звезда — это паттерн из скольких свечей?", opts: ["Трёх", "Одной", "Пяти", "Двух"], a: 0, exp: "Крупная медвежья свеча, маленькая свеча с гэпом, затем крупная бычья свеча." },
+    { q: "Утренняя звезда сигнализирует о", opts: ["Развороте тренда вверх", "Развороте тренда вниз", "Продолжении падения", "Отсутствии объёма"], a: 0, exp: "Один из самых надёжных трёхсвечных сигналов разворота на дне тренда." },
+    { q: "Вечерняя звезда — зеркало утренней звезды и появляется", opts: ["На вершине тренда, сигнализируя о развороте вниз", "На дне тренда, сигнализируя о развороте вверх", "Только на форексе", "Только при высокой комиссии"], a: 0, exp: "Крупная бычья свеча, маленькая свеча с гэпом вверх, затем крупная медвежья свеча." },
+    { q: "Гэп — это", opts: ["Разрыв между закрытием одной свечи и открытием следующей без сделок в промежутке", "Тип свечного паттерна из трёх свечей", "Синоним стоп-лосса", "Комиссия за удержание позиции"], a: 0, exp: "Обычно возникает на открытии биржи после ночи или выходных, либо на неожиданных новостях." },
+    { q: "Небольшие гэпы часто", opts: ["«Закрываются» — цена возвращается и заполняет разрыв", "Никогда не заполняются", "Отменяют торги на весь день", "Увеличивают комиссию брокера"], a: 0, exp: "Цена нередко возвращается в область гэпа в ближайшее время после его появления." },
+    { q: "Внутренний бар (Inside Bar) — это свеча, чей диапазон", opts: ["Полностью укладывается внутри диапазона предыдущей свечи", "Полностью перекрывает диапазон предыдущей свечи", "Равен нулю", "Всегда самый большой на графике"], a: 0, exp: "Означает паузу и сжатие волатильности перед следующим движением." },
+    { q: "Внешний бар (Outside Bar) сигнализирует о", opts: ["Резком всплеске волатильности, часто о развороте", "Полном отсутствии объёма", "Закрытии биржи", "Смене таймфрейма"], a: 0, exp: "Его диапазон полностью перекрывает диапазон предыдущей свечи с обеих сторон." },
   ],
   3: [
     { q: "Что характерно для восходящего тренда?", opts: ["Максимумы и минимумы растут", "Максимумы и минимумы падают", "Цена стоит на месте", "Нет свечей"], a: 0, exp: "Каждый новый пик выше предыдущего — это и есть восходящая структура." },
@@ -759,11 +822,19 @@ const QUIZZES = {
     { q: "Трендовые индикаторы (например MACD) в первую очередь", opts: ["Следуют за направлением и подтверждают тренд", "Измеряют только объём", "Работают лучше всего в боковике", "Заменяют собой график"], a: 0, exp: "Трендовые индикаторы двигаются вместе с трендом, подтверждая направление." },
     { q: "Осцилляторы (RSI, Stochastic) лучше всего показывают себя", opts: ["В боковике, измеряя перекупленность/перепроданность", "Только на новостях", "На дневных графиках без исключений", "Никогда не работают"], a: 0, exp: "В боковике цена колеблется в диапазоне, и осцилляторы хорошо ловят его края." },
     { q: "RSI выше 70 обычно интерпретируют как", opts: ["Перепроданность", "Возможную перекупленность", "Отсутствие тренда", "Ошибку расчёта"], a: 1, exp: "Высокие значения RSI говорят, что рост был слишком резким." },
+    { q: "Экспоненциальная скользящая средняя (EMA) в отличие от простой (SMA)", opts: ["Отдаёт больше веса свежим ценам и быстрее реагирует на разворот", "Всегда точнее предсказывает будущее", "Не использует исторические данные", "Работает только на форексе"], a: 0, exp: "EMA быстрее реагирует на смену направления, но и чаще даёт ложные сигналы на шумном рынке." },
+    { q: "«Золотой крест» — это", opts: ["Пересечение быстрой скользящей средней медленной снизу вверх", "Пересечение сверху вниз", "Название индикатора RSI", "Тип свечного паттерна"], a: 0, exp: "Считается бычьим сигналом, хотя и запаздывает относительно самого разворота цены." },
     { q: "MACD строится на основе", opts: ["Объёма торгов", "Схождения-расхождения скользящих средних", "Курса золота", "Числа свечей"], a: 1, exp: "MACD измеряет разницу между двумя скользящими средними." },
     { q: "Расширение полос Боллинджера говорит о", opts: ["Росте волатильности", "Падении волатильности до нуля", "Закрытии биржи", "Смене валюты"], a: 0, exp: "Полосы строятся на основе стандартного отклонения — расширяются при росте колебаний." },
     { q: "Stochastic Oscillator выше 80 обычно значит", opts: ["Возможную перекупленность", "Возможную перепроданность", "Отсутствие данных", "Гарантию падения"], a: 0, exp: "Цена закрылась близко к верхней границе недавнего диапазона." },
     { q: "Зачем анализировать несколько таймфреймов сразу?", opts: ["Чтобы не идти против крупного тренда ради мелкого сигнала", "Это не нужно, достаточно одного графика", "Чтобы увеличить комиссию", "Чтобы замедлить анализ"], a: 0, exp: "Старший таймфрейм даёт общее направление, младший — точную точку входа." },
     { q: "Сигналы на разных таймфреймах", opts: ["Могут противоречить друг другу", "Всегда совпадают", "Не существуют на младших ТФ", "Одинаковы для всех активов"], a: 0, exp: "5-минутный и дневной график одного актива вполне могут показывать разное направление." },
+    { q: "Уровни Фибоначчи используют, чтобы", opts: ["Отметить вероятные зоны разворота отката цены", "Рассчитать комиссию биржи", "Определить объём торгов", "Заменить стоп-лосс"], a: 0, exp: "После сильного движения цена часто останавливается у характерных уровней вроде 61.8%." },
+    { q: "Уровень Фибоначчи 61.8% называют", opts: ["«Золотым сечением»", "Точкой безубытка", "Маржин-коллом", "Спредом"], a: 0, exp: "Считается самым значимым уровнем отката перед возобновлением тренда." },
+    { q: "Медвежья дивергенция RSI — это когда", opts: ["Цена делает новый максимум, а RSI — нет", "RSI и цена растут синхронно", "RSI выше 70", "Объём падает до нуля"], a: 0, exp: "Более низкий пик RSI при новом максимуме цены — сигнал ослабления восходящего движения." },
+    { q: "Чем ценна дивергенция для трейдера?", opts: ["Предупреждает о развороте раньше, чем это видно на самом графике цены", "Гарантирует 100% точный разворот", "Заменяет необходимость смотреть на цену", "Работает только на форексе"], a: 0, exp: "Дивергенция показывает ослабление импульса до того, как разворот станет очевиден по цене." },
+    { q: "ATR (Average True Range) измеряет", opts: ["Средний размах движения цены за период", "Направление тренда", "Объём торгов", "Комиссию брокера"], a: 0, exp: "ATR показывает амплитуду, а не направление — высокий ATR значит рынок волатильнее." },
+    { q: "Зачем ATR при расстановке стоп-лосса?", opts: ["Учитывает реальную амплитуду актива вместо произвольного числа процентов", "Гарантирует прибыль", "Отменяет необходимость стопа", "Работает только на дневном графике"], a: 0, exp: "Слишком близкий стоп на волатильном активе выбьет случайным шумом ещё до того, как идея сработает." },
   ],
   4: [
     { q: "Экономический календарь показывает", opts: ["Даты публикации важной статистики", "Курс валют за прошлый год", "Список всех бирж", "Историю компании"], a: 0, exp: "Календарь помогает заранее знать, когда ждать повышенной волатильности." },
@@ -777,6 +848,10 @@ const QUIZZES = {
     { q: "Отчёт по занятости (NFP) и PMI в первую очередь показывают", opts: ["Курс золота", "Здоровье экономики ещё до выхода полного ВВП", "Комиссию биржи", "Название индекса"], a: 1, exp: "Оба индикатора выходят чаще, чем ВВП, и дают раннее представление о состоянии экономики." },
     { q: "Рост доллара обычно оказывает на цену золота", opts: ["Давящее влияние (золото котируется в долларах)", "Всегда усиливающее влияние", "Никакого влияния", "Влияет только на крипту"], a: 0, exp: "Классическая обратная корреляция: чем дороже доллар, тем менее привлекательно золото в долларовом выражении." },
     { q: "Во время геополитических форс-мажоров капитал чаще всего перетекает в", opts: ["Защитные активы вроде золота и доллара", "Крипту без исключений", "Акции малых компаний", "Товары повседневного спроса"], a: 0, exp: "В моменты неопределённости спрос на «безопасные гавани» обычно растёт, а рискованные активы проседают." },
+    { q: "Керри-трейд — это стратегия, где", opts: ["Занимают валюту с низкой ставкой и вкладывают в валюту с высокой ставкой", "Всегда покупают только доллар", "Торгуют исключительно на новостях", "Игнорируют решения центробанков"], a: 0, exp: "Именно поэтому решения о ставке центробанка так сильно двигают валютные пары." },
+    { q: "Высокий P/E компании обычно означает, что", opts: ["Рынок ждёт быстрого роста прибыли компании", "Компания точно обанкротится", "Акция стоит меньше номинала", "Дивиденды гарантированы"], a: 0, exp: "P/E показывает, сколько лет потребуется, чтобы окупить текущую цену прибылью — высокий P/E значит ожидания роста заложены в цену." },
+    { q: "Халвинг у биткоина происходит", opts: ["Раз в четыре года, уменьшая вознаграждение за добычу вдвое", "Каждый день", "Только при обвале рынка", "По решению одной биржи"], a: 0, exp: "Снижает приток новых монет на рынок, что многие считают фактором долгосрочной поддержки цены." },
+    { q: "Сезонность рынка — это", opts: ["Статистическая тенденция по прошлым данным, а не гарантия", "Гарантированный сигнал для входа в сделку", "Название индикатора", "Тип ордера"], a: 0, exp: "Сезонность никогда не должна быть единственной причиной для сделки." },
   ],
   5: [
     { q: "Трендовая стратегия предполагает, что", opts: ["Рынок с большей вероятностью развернётся", "Начатое движение с большей вероятностью продолжится", "Цена всегда стоит на месте", "Индикаторы не нужны никогда"], a: 1, exp: "Логика трендовой торговли — двигаться по направлению уже подтверждённого тренда." },
@@ -789,6 +864,9 @@ const QUIZZES = {
     { q: "Торговый план и чек-лист входа нужны, чтобы", opts: ["Заменить эмоциональное решение решением по заранее написанным правилам", "Усложнить торговлю без причины", "Увеличить количество сделок", "Отменить стоп-лоссы"], a: 0, exp: "Чек-лист, написанный в спокойном состоянии, снижает влияние эмоций момента." },
     { q: "Что должно быть в торговом плане?", opts: ["Условия входа, стоп, цель, допустимый риск", "Только название актива", "Список знакомых трейдеров", "Курс валют на год вперёд"], a: 0, exp: "План описывает конкретные условия принятия решения, а не общие пожелания." },
     { q: "Как выбрать стратегию под себя?", opts: ["Оценить время, терпимость к риску и рынок торговли", "Скопировать чужую стратегию не глядя", "Выбрать самую сложную", "Стратегия не важна"], a: 0, exp: "Стратегия должна соответствовать вашему реальному образу жизни и характеру." },
+    { q: "Система на пересечении скользящих средних — пример", opts: ["Полностью механической стратегии с однозначными правилами", "Стратегии, требующей интуиции", "Индикатора объёма", "Свечного паттерна"], a: 0, exp: "Такие правила легко формализовать и проверить на исторических данных." },
+    { q: "Переподгонка (curve fitting) при бэктестинге — это", opts: ["Слишком точная подгонка стратегии под прошлые данные", "Тестирование на будущих данных", "Использование только одного индикатора", "Торговля без стратегии вообще"], a: 0, exp: "Такая стратегия «выучивает» случайный шум прошлого и обычно проваливается на новых данных." },
+    { q: "Дневной трейдер, в отличие от позиционного", opts: ["Закрывает все позиции до конца торгового дня", "Держит сделки месяцами", "Не использует стоп-лосс", "Торгует только раз в неделю"], a: 0, exp: "Дневной трейдер не оставляет риск на ночь, позиционный ориентируется на крупные тренды неделями." },
   ],
   6: [
     { q: "Сколько капитала обычно рискуют профессионалы в одной сделке?", opts: ["1–2%", "20–30%", "50%", "100%"], a: 0, exp: "Небольшой риск на сделку позволяет пережить серию убытков подряд." },
@@ -802,6 +880,9 @@ const QUIZZES = {
     { q: "Пять сделок по разным валютным парам с долларом — это", opts: ["Не обязательно настоящая диверсификация из-за скрытой корреляции", "Всегда идеальная диверсификация", "Запрещённая стратегия", "Гарантия прибыли"], a: 0, exp: "Если все позиции реагируют на одно и то же событие синхронно, риск на деле сконцентрирован, а не распределён." },
     { q: "Дневной лимит убытка помогает", opts: ["Не «отыгрываться» на эмоциях после неудачной сделки", "Увеличить прибыль гарантированно", "Отменить необходимость стоп-лосса", "Избежать уплаты налогов"], a: 0, exp: "Заранее заданный лимит останавливает серию эмоциональных решений после первой неудачи за день." },
     { q: "После нескольких убытков подряд разумно", opts: ["Временно снизить риск на сделку", "Резко увеличить риск, чтобы быстрее отыграться", "Прекратить вести журнал сделок", "Сменить весь торговый план на случайный"], a: 0, exp: "Снижение риска помогает остаться в игре достаточно долго, чтобы полоса неудач закончилась." },
+    { q: "Критерий Келли рассчитывает", opts: ["Теоретически оптимальный размер ставки исходя из статистики стратегии", "Комиссию брокера", "Курс валютной пары", "Время удержания позиции"], a: 0, exp: "Учитывает процент выигрышных сделок и среднее соотношение прибыли к убытку." },
+    { q: "Почему трейдеры часто используют «половину Келли»?", opts: ["Это заметно снижает волатильность результата ценой небольшой части роста капитала", "Так требует закон", "Полный Келли запрещён биржами", "Это увеличивает размер позиции вдвое"], a: 0, exp: "Полный размер по Келли слишком агрессивен и чувствителен к ошибкам в оценке своей статистики." },
+    { q: "Суммарный риск портфеля при пяти открытых сделках", opts: ["Может быть намного выше риска одной сделки, особенно если позиции коррелируют", "Всегда равен риску одной сделки", "Автоматически ограничен биржей", "Не имеет значения, если каждая сделка мелкая"], a: 0, exp: "Важно следить не только за риском отдельной сделки, но и за суммарным риском по всем открытым позициям." },
   ],
   7: [
     { q: "Страх чаще всего заставляет трейдера", opts: ["Закрывать прибыльные сделки слишком рано", "Держать позицию слишком долго", "Увеличивать объём сделки", "Полностью игнорировать рынок"], a: 0, exp: "Страх потерять уже полученную прибыль толкает закрывать сделку раньше плана." },
@@ -972,6 +1053,14 @@ const CANDLES_PRACTICE = [
   {o:22,h:14,l:25,c:17},
 ];
 const PRACTICE_ENTRY = 93, PRACTICE_STOP = 103, PRACTICE_TARGET = 14;
+const CANDLES_SHORT = [
+  {o:90,h:78.4,l:91.5,c:80.0},{o:80.0,h:68.7,l:82.0,c:69.9},{o:69.9,h:58.9,l:71.2,c:61.1},
+  {o:61.1,h:49.9,l:63.8,c:51.9},{o:51.9,h:42.9,l:53.3,c:45.8},{o:45.8,h:33.7,l:48.5,c:35.7},
+  {o:35.7,h:26.7,l:39.7,c:41.7},{o:41.7,h:39.7,l:51.7,c:50.7},{o:50.7,h:49.1,l:58.8,c:57.6},
+  {o:57.6,h:55.5,l:68.9,c:67.5},{o:67.5,h:66.3,l:75.9,c:74.5},{o:74.5,h:72.6,l:85.7,c:83.3},
+  {o:83.3,h:80.6,l:92.6,c:89.6},{o:89.6,h:87.2,l:102.0,c:99.3},
+];
+const SHORT_ENTRY = 32, SHORT_STOP = 18, SHORT_TARGET = 96;
 
 const CANDLES_PATTERN_ENGULF = [
   {o:52,h:48,l:56,c:50},{o:50,h:46,l:54,c:47},{o:47,h:60,l:44,c:58},
@@ -993,6 +1082,10 @@ const PATTERN_CANDLES = {
   HARAMI_BEAR: [{o:70,h:30,l:74,c:34},{o:50,h:47,l:59,c:56}],
   MARUBOZU_BULL: [{o:78,h:20,l:80,c:22}],
   MARUBOZU_BEAR: [{o:22,h:20,l:80,c:78}],
+  THREE_SOLDIERS: [{o:78,h:72,l:82,c:60},{o:62,h:54,l:65,c:42},{o:44,h:34,l:47,c:22}],
+  THREE_CROWS: [{o:22,h:18,l:30,c:40},{o:38,h:34,l:46,c:58},{o:56,h:52,l:64,c:76}],
+  MORNING_STAR: [{o:30,h:26,l:70,c:66},{o:70,h:66,l:76,c:72},{o:70,h:20,l:74,c:24}],
+  EVENING_STAR: [{o:70,h:66,l:74,c:30},{o:26,h:20,l:32,c:24},{o:28,h:32,l:78,c:74}],
 };
 
 /* Level 5 chart patterns (candle-based, not silhouettes) */
@@ -1028,10 +1121,10 @@ const ICONS = {
   doubleBottom: (g,bu,be,bo,t) => buildCandleSVG(CANDLES_DOUBLE_BOTTOM, {height:90}),
   flagPattern: (g,bu,be,bo,t) => buildCandleSVG(CANDLES_FLAG, {height:90}),
   trianglePattern: (g,bu,be,bo,t) => buildCandleSVG(CANDLES_TRIANGLE, {height:90}),
-  building: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M100,15 L130,0 L160,15 Z" fill="${g}"/><rect x="98" y="15" width="64" height="6" fill="${g}"/><rect x="104" y="25" width="8" height="38" fill="${t}"/><rect x="122" y="25" width="8" height="38" fill="${t}"/><rect x="140" y="25" width="8" height="38" fill="${t}"/><rect x="150" y="25" width="8" height="38" fill="${t}"/><rect x="92" y="65" width="76" height="7" rx="1.5" fill="${g}"/></svg>`,
+  building: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M96,18 L130,3 L164,18" fill="none" stroke="${g}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="92" y1="18" x2="168" y2="18" stroke="${g}" stroke-width="2.2"/><line x1="100" y1="24" x2="100" y2="60" stroke="${t}" stroke-width="2"/><line x1="118" y1="24" x2="118" y2="60" stroke="${t}" stroke-width="2"/><line x1="142" y1="24" x2="142" y2="60" stroke="${t}" stroke-width="2"/><line x1="160" y1="24" x2="160" y2="60" stroke="${t}" stroke-width="2"/><line x1="90" y1="66" x2="170" y2="66" stroke="${g}" stroke-width="2.2" stroke-linecap="round"/></svg>`,
   network: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="60" cy="30" r="7" fill="${g}"/><circle cx="130" cy="18" r="7" fill="${bu}"/><circle cx="200" cy="30" r="7" fill="${g}"/><circle cx="90" cy="65" r="7" fill="${bu}"/><circle cx="170" cy="65" r="7" fill="${g}"/><line x1="60" y1="30" x2="130" y2="18" stroke="${t}" stroke-width="1.5"/><line x1="130" y1="18" x2="200" y2="30" stroke="${t}" stroke-width="1.5"/><line x1="60" y1="30" x2="90" y2="65" stroke="${t}" stroke-width="1.5"/><line x1="90" y1="65" x2="170" y2="65" stroke="${t}" stroke-width="1.5"/><line x1="170" y1="65" x2="200" y2="30" stroke="${t}" stroke-width="1.5"/><line x1="130" y1="18" x2="90" y2="65" stroke="${t}" stroke-width="1.5"/><line x1="130" y1="18" x2="170" y2="65" stroke="${t}" stroke-width="1.5"/></svg>`,
   people: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[70,130,190].map((cx,i)=>`<circle cx="${cx}" cy="30" r="${i===1?14:11}" fill="none" stroke="${i===1?g:t}" stroke-width="2.4"/><path d="M${cx-18},70 Q${cx-18},48 ${cx},48 Q${cx+18},48 ${cx+18},70" fill="none" stroke="${i===1?g:t}" stroke-width="2.4"/>`).join("")}</svg>`,
-  assetGrid: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[["€",bu],["₿",g],["📈",t],["🛢",be]].map((_,i)=>{const x=70+i*40,shapes=[`<circle cx="${x}" cy="45" r="16" fill="none" stroke="${bu}" stroke-width="2.5"/>`,`<rect x="${x-14}" y="31" width="28" height="28" rx="4" fill="none" stroke="${g}" stroke-width="2.5"/>`,`<polygon points="${x},29 ${x+16},59 ${x-16},59" fill="none" stroke="${t}" stroke-width="2.5"/>`,`<circle cx="${x}" cy="45" r="16" fill="none" stroke="${be}" stroke-width="2.5"/><line x1="${x-8}" y1="45" x2="${x+8}" y2="45" stroke="${be}" stroke-width="2"/>`];return shapes[i];}).join("")}</svg>`,
+  assetGrid: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[0,1,2,3].map(i=>{const x=70+i*40,shapes=[`<circle cx="${x}" cy="45" r="16" fill="none" stroke="${bu}" stroke-width="2.5"/>`,`<rect x="${x-14}" y="31" width="28" height="28" rx="4" fill="none" stroke="${g}" stroke-width="2.5"/>`,`<polygon points="${x},29 ${x+16},59 ${x-16},59" fill="none" stroke="${t}" stroke-width="2.5"/>`,`<circle cx="${x}" cy="45" r="16" fill="none" stroke="${be}" stroke-width="2.5"/><line x1="${x-8}" y1="45" x2="${x+8}" y2="45" stroke="${be}" stroke-width="2"/>`];return shapes[i];}).join("")}</svg>`,
   currencySwap: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="95" cy="45" r="28" fill="none" stroke="${bu}" stroke-width="2.5"/><text x="95" y="53" font-size="22" text-anchor="middle" fill="${bu}" font-family="Space Grotesk">€</text><circle cx="165" cy="45" r="28" fill="none" stroke="${g}" stroke-width="2.5"/><text x="165" y="53" font-size="22" text-anchor="middle" fill="${g}" font-family="Space Grotesk">$</text><path d="M128,38 L138,45 L128,52" fill="none" stroke="${t}" stroke-width="2"/><path d="M132,52 L122,45 L132,38" fill="none" stroke="${t}" stroke-width="2"/></svg>`,
   stockArrow: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M25,72 L80,45 L115,58 L165,25 L210,32" fill="none" stroke="${bu}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M188,25 L212,32 L204,55" fill="none" stroke="${bu}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="80" cy="45" r="3.5" fill="${bu}"/><circle cx="115" cy="58" r="3.5" fill="${bu}"/></svg>`,
   indexGrid: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[0,1,2,3,4,5].map(i => {const col=i%3,row=Math.floor(i/3),x=82+col*36,y=22+row*36,isHi=i===4;return `<rect x="${x}" y="${y}" width="26" height="26" rx="4" fill="${isHi?g:'none'}" stroke="${isHi?g:t}" stroke-width="2"/>`;}).join("")}</svg>`,
@@ -1060,7 +1153,7 @@ const ICONS = {
   correlation: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,60 Q70,20 130,45 T240,30" fill="none" stroke="${bu}" stroke-width="2.4"/><path d="M20,30 Q70,65 130,42 T240,58" fill="none" stroke="${be}" stroke-width="2.4"/></svg>`,
   globe: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="130" cy="45" r="32" fill="none" stroke="${g}" stroke-width="2.2"/><ellipse cx="130" cy="45" rx="14" ry="32" fill="none" stroke="${g}" stroke-width="1.4" opacity="0.6"/><line x1="98" y1="45" x2="162" y2="45" stroke="${g}" stroke-width="1.4" opacity="0.6"/><line x1="105" y1="27" x2="155" y2="27" stroke="${g}" stroke-width="1.2" opacity="0.4"/><line x1="105" y1="63" x2="155" y2="63" stroke="${g}" stroke-width="1.2" opacity="0.4"/></svg>`,
   compass: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="130" cy="45" r="32" fill="none" stroke="${bo}" stroke-width="2"/><circle cx="130" cy="45" r="20" fill="none" stroke="${bo}" stroke-width="1.4"/><line x1="130" y1="45" x2="150" y2="28" stroke="${g}" stroke-width="2.6" stroke-linecap="round"/><circle cx="130" cy="45" r="3" fill="${g}"/></svg>`,
-  lightning: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><polygon points="140,10 105,52 125,52 118,80 158,38 136,38" fill="${g}"/></svg>`,
+  lightning: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><polygon points="140,10 105,52 125,52 118,80 158,38 136,38" fill="none" stroke="${g}" stroke-width="2.4" stroke-linejoin="round"/></svg>`,
   wave: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,55 Q55,20 90,55 T160,55 T230,55" fill="none" stroke="${bu}" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   rewind: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="130" cy="45" r="30" fill="none" stroke="${g}" stroke-width="2.4"/><path d="M118,32 L100,45 L118,58" fill="none" stroke="${g}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M130,45 A16,16 0 1 1 129,45" fill="none" stroke="${g}" stroke-width="2"/></svg>`,
   checklist: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><rect x="80" y="18" width="100" height="54" rx="6" fill="none" stroke="${g}" stroke-width="2.5"/><path d="M92,34 L100,42 L114,26" fill="none" stroke="${bu}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="122" y1="34" x2="168" y2="34" stroke="${t}" stroke-width="3" stroke-linecap="round"/><path d="M92,58 L100,66 L114,50" fill="none" stroke="${bu}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="122" y1="58" x2="168" y2="58" stroke="${t}" stroke-width="3" stroke-linecap="round"/></svg>`,
@@ -1072,8 +1165,8 @@ const ICONS = {
   drawdown: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,25 L80,25 L140,70 L200,70 L235,20" fill="none" stroke="${be}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M215,32 L235,20 L222,42" fill="none" stroke="${bu}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   stopSign: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><polygon points="105,15 155,15 178,38 178,52 155,75 105,75 82,52 82,38" fill="none" stroke="${be}" stroke-width="2.6"/><line x1="115" y1="45" x2="145" y2="45" stroke="${be}" stroke-width="3" stroke-linecap="round"/></svg>`,
   shrink: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M95,30 L60,30 L60,50" fill="none" stroke="${g}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M60,30 L95,60" fill="none" stroke="${g}" stroke-width="2.2"/><path d="M165,30 L200,30 L200,50" fill="none" stroke="${g}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M200,30 L165,60" fill="none" stroke="${g}" stroke-width="2.2"/></svg>`,
-  masks: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="95" cy="45" r="26" fill="none" stroke="${bu}" stroke-width="2.4"/><circle cx="85" cy="38" r="3" fill="${bu}"/><circle cx="108" cy="38" r="3" fill="${bu}"/><path d="M82,55 Q95,64 110,55" fill="none" stroke="${bu}" stroke-width="2.2" stroke-linecap="round"/><circle cx="175" cy="45" r="26" fill="none" stroke="${be}" stroke-width="2.4"/><circle cx="165" cy="40" r="3" fill="${be}"/><circle cx="188" cy="40" r="3" fill="${be}"/><path d="M162,58 Q175,49 190,58" fill="none" stroke="${be}" stroke-width="2.2" stroke-linecap="round"/></svg>`,
-  runner: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="150" cy="20" r="9" fill="${be}"/><path d="M150,29 L145,55 L125,70 M150,29 L162,50 L180,45 M145,55 L165,60" fill="none" stroke="${be}" stroke-width="3" stroke-linecap="round"/><path d="M60,50 L100,50" stroke="${t}" stroke-width="2" stroke-dasharray="4 4"/></svg>`,
+  masks: (g,bu,be,bo,t) => { const cx=130, cy=66, r=48; const af=f=>Math.PI-f*Math.PI; const x0=cx+r*Math.cos(af(0)),y0=cy-r*Math.sin(af(0)); const xm=cx+r*Math.cos(af(0.5)),ym=cy-r*Math.sin(af(0.5)); const x1=cx+r*Math.cos(af(1)),y1=cy-r*Math.sin(af(1)); const na=af(0.32); const nx=cx+(r-15)*Math.cos(na), ny=cy-(r-15)*Math.sin(na); return `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M ${x0},${y0} A ${r},${r} 0 0 1 ${xm},${ym}" fill="none" stroke="${be}" stroke-width="7" stroke-linecap="round"/><path d="M ${xm},${ym} A ${r},${r} 0 0 1 ${x1},${y1}" fill="none" stroke="${bu}" stroke-width="7" stroke-linecap="round"/><text x="${cx-r+4}" y="${cy+18}" font-size="9.5" fill="${be}" font-family="Inter">страх</text><text x="${cx+r-46}" y="${cy+18}" font-size="9.5" fill="${bu}" font-family="Inter">жадность</text><line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${g}" stroke-width="2.6" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="3.5" fill="${g}"/></svg>`; },
+  runner: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,70 L70,55 L110,60 L150,30 L230,15" fill="none" stroke="${t}" stroke-width="2" stroke-dasharray="5 4" opacity="0.7"/><path d="M150,55 L188,40 L222,49" fill="none" stroke="${be}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M206,37 L223,49 L207,58" fill="none" stroke="${be}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><line x1="128" y1="62" x2="144" y2="58" stroke="${be}" stroke-width="1.6" opacity="0.55"/><line x1="124" y1="70" x2="141" y2="65" stroke="${be}" stroke-width="1.6" opacity="0.35"/></svg>`,
   brokenChart: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,30 L70,55 L110,25" fill="none" stroke="${bu}" stroke-width="2.6" stroke-linecap="round"/><path d="M110,25 L120,45 L140,35" fill="none" stroke="${be}" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="1 5"/><path d="M140,35 L170,75 L230,60" fill="none" stroke="${be}" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   puzzle: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><rect x="80" y="25" width="45" height="45" rx="4" fill="none" stroke="${g}" stroke-width="2.2"/><rect x="135" y="25" width="45" height="45" rx="4" fill="none" stroke="${bo}" stroke-width="2.2"/><circle cx="125" cy="47" r="7" fill="var(--bg)" stroke="${g}" stroke-width="2.2"/></svg>`,
   crown: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><polygon points="85,65 85,35 108,50 130,25 152,50 175,35 175,65" fill="none" stroke="${g}" stroke-width="2.4" stroke-linejoin="round"/></svg>`,
@@ -1082,6 +1175,17 @@ const ICONS = {
   pause: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="130" cy="45" r="32" fill="none" stroke="${g}" stroke-width="2.4"/><rect x="118" y="30" width="8" height="30" rx="2" fill="${g}"/><rect x="134" y="30" width="8" height="30" rx="2" fill="${g}"/></svg>`,
   screen: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><rect x="70" y="18" width="120" height="46" rx="5" fill="none" stroke="${g}" stroke-width="2.4"/><line x1="110" y1="72" x2="150" y2="72" stroke="${g}" stroke-width="2.4" stroke-linecap="round"/><line x1="130" y1="64" x2="130" y2="72" stroke="${g}" stroke-width="2.4"/><path d="M82,50 L100,38 L115,45 L135,28 L155,42 L178,30" fill="none" stroke="${bu}" stroke-width="2" stroke-linecap="round"/></svg>`,
   journal: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><rect x="90" y="14" width="80" height="62" rx="4" fill="none" stroke="${g}" stroke-width="2.2"/><line x1="90" y1="26" x2="170" y2="26" stroke="${g}" stroke-width="1.6"/><line x1="102" y1="40" x2="158" y2="40" stroke="${t}" stroke-width="1.8"/><line x1="102" y1="50" x2="158" y2="50" stroke="${t}" stroke-width="1.8"/><line x1="102" y1="60" x2="140" y2="60" stroke="${t}" stroke-width="1.8"/></svg>`,
+  marketVsLimit: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M40,55 L70,40 L95,48" fill="none" stroke="${bu}" stroke-width="2.4" stroke-linecap="round"/><circle cx="95" cy="48" r="4" fill="${bu}"/><text x="67" y="72" font-size="9.5" text-anchor="middle" fill="${bu}" font-family="Inter">рыночный</text><path d="M150,55 L180,55 L205,35" fill="none" stroke="${g}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="1 5"/><circle cx="205" cy="35" r="5" fill="none" stroke="${g}" stroke-width="2.2"/><text x="180" y="72" font-size="9.5" text-anchor="middle" fill="${g}" font-family="Inter">лимитный</text></svg>`,
+  stopTrigger: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><line x1="20" y1="35" x2="240" y2="35" stroke="${be}" stroke-width="2" stroke-dasharray="4 3"/><path d="M40,60 L90,50 L130,55 L150,35 L160,35" fill="none" stroke="${t}" stroke-width="2.2" stroke-linecap="round"/><path d="M160,35 L200,20" fill="none" stroke="${bu}" stroke-width="2.4" stroke-linecap="round"/><circle cx="160" cy="35" r="4.5" fill="${be}"/></svg>`,
+  sessionsClock: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><circle cx="130" cy="45" r="34" fill="none" stroke="${bo}" stroke-width="2"/><path d="M130,45 L130,15 A30,30 0 0 1 156,60 Z" fill="${g}" opacity="0.35"/><path d="M130,45 L156,60 A30,30 0 0 1 104,60 Z" fill="${bu}" opacity="0.35"/><path d="M130,45 L104,60 A30,30 0 0 1 130,15 Z" fill="${be}" opacity="0.35"/><circle cx="130" cy="45" r="2.5" fill="${t}"/></svg>`,
+  fibLevels: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M25,70 L80,20 L230,55" fill="none" stroke="${bu}" stroke-width="2.2" stroke-linecap="round"/>${[28,38,48,58].map((y,i)=>`<line x1="60" y1="${y}" x2="230" y2="${y}" stroke="${g}" stroke-width="1.2" stroke-dasharray="3 3" opacity="${0.9-i*0.15}"/>`).join("")}</svg>`,
+  divergence: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,55 L70,30 L120,38 L170,15" fill="none" stroke="${bu}" stroke-width="2.4" stroke-linecap="round"/><path d="M20,75 L70,65 L120,68 L170,60" fill="none" stroke="${g}" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="4 3"/><circle cx="70" cy="30" r="2.5" fill="${bu}"/><circle cx="170" cy="15" r="2.5" fill="${bu}"/><circle cx="70" cy="65" r="2.5" fill="${g}"/><circle cx="170" cy="60" r="2.5" fill="${g}"/></svg>`,
+  atrIcon: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[18,32,14,40,26,36,20].map((h,i)=>`<line x1="${40+i*28}" y1="${45-h/2}" x2="${40+i*28}" y2="${45+h/2}" stroke="${g}" stroke-width="3" stroke-linecap="round"/>`).join("")}</svg>`,
+  maLine: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90">${[[30,60],[55,48],[80,52],[105,35],[130,40],[155,25],[180,30],[205,18],[230,22]].map((p,i,arr)=>i>0?`<line x1="${arr[i-1][0]}" y1="${arr[i-1][1]+22}" x2="${p[0]}" y2="${p[1]+22}" stroke="${t}" stroke-width="1.6" opacity="0.55"/>`:"").join("")}<path d="M30,68 Q80,62 130,50 T230,28" fill="none" stroke="${g}" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+  maCross: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><path d="M20,65 Q90,60 130,45 T240,15" fill="none" stroke="${bu}" stroke-width="2.4" stroke-linecap="round"/><path d="M20,30 Q90,40 130,45 T240,70" fill="none" stroke="${be}" stroke-width="2.2" stroke-linecap="round"/><circle cx="130" cy="45" r="4" fill="${g}"/></svg>`,
+  gapIcon: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><line x1="90" y1="20" x2="90" y2="60" stroke="${bu}" stroke-width="2.4"/><rect x="82" y="30" width="16" height="22" fill="${bu}" rx="1.5"/><line x1="170" y1="18" x2="170" y2="50" stroke="${g}" stroke-width="2.4"/><rect x="162" y="20" width="16" height="20" fill="${g}" rx="1.5"/><rect x="100" y="15" width="60" height="50" fill="none" stroke="${t}" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/></svg>`,
+  insideBar: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><line x1="110" y1="15" x2="110" y2="75" stroke="${t}" stroke-width="2.2"/><rect x="94" y="30" width="32" height="30" fill="none" stroke="${t}" stroke-width="2" rx="1.5"/><line x1="170" y1="35" x2="170" y2="55" stroke="${g}" stroke-width="2.2"/><rect x="160" y="40" width="20" height="12" fill="${g}" rx="1.5"/></svg>`,
+  outsideBar: (g,bu,be,bo,t) => `<svg width="100%" height="90" viewBox="0 0 260 90"><line x1="110" y1="35" x2="110" y2="55" stroke="${t}" stroke-width="2.2"/><rect x="100" y="40" width="20" height="12" fill="${t}" rx="1.5"/><line x1="175" y1="12" x2="175" y2="78" stroke="${be}" stroke-width="2.4"/><rect x="158" y="26" width="34" height="36" fill="none" stroke="${be}" stroke-width="2.2" rx="1.5"/></svg>`,
   rsiChart: (g,bu,be,bo,t) => buildCandleSVG(CANDLES_RANGE, {height:90, oscillator:{values:[45,55,62,72,65,50,38,28], label:"RSI", lines:[30,70]}}),
   bandsChart: (g,bu,be,bo,t) => { const mid = CANDLES_RANGE.map(c => (c.o+c.c)/2); const upper = mid.map(v => v-9); const lower = mid.map(v => v+9); return buildCandleSVG(CANDLES_RANGE, {height:90, bands:{upper, lower, mid}}); },
   stochChart: (g,bu,be,bo,t) => buildCandleSVG(CANDLES_RANGE, {height:90, oscillator:{values:[35,50,68,85,72,55,30,15], label:"Stoch", lines:[20,80]}}),
@@ -1134,6 +1238,27 @@ const EXERCISES = {
         target: PRACTICE_TARGET, tolerance: 11,
         expCorrect: "Верно — это верхняя часть движения, разумная цель для фиксации прибыли по этой сделке.",
         expWrong: "Цель — самая верхняя часть графика, куда цена в итоге дошла после разворота от поддержки."
+      },
+      {
+        instruction: "Часть 3 · Сделка на продажу. Шаг 1 из 3. Здесь цена росла, но упёрлась в сопротивление и развернулась вниз. Отметьте точку ВХОДА в продажу — там, где цена оттолкнулась от сопротивления вниз.",
+        candles: CANDLES_SHORT, height:130, domain:110,
+        target: SHORT_ENTRY, tolerance: 12,
+        expCorrect: "Верно — цена протестировала сопротивление и тут же развернулась вниз. Логичная точка для входа в продажу.",
+        expWrong: "Точка входа в продажу — там, где верхние тени свечей упёрлись в сопротивление и цена сразу пошла вниз."
+      },
+      {
+        instruction: "Часть 3 · Сделка на продажу. Шаг 2 из 3. Поставьте СТОП-ЛОСС — чуть выше уровня сопротивления, который отменяет идею на продажу.",
+        candles: CANDLES_SHORT, height:130, domain:110,
+        target: SHORT_STOP, tolerance: 9,
+        expCorrect: "Правильно — стоп чуть выше сопротивления. Если цена туда дойдёт, значит уровень пробит вверх и идея на продажу не сработала.",
+        expWrong: "При продаже стоп ставят ВЫШЕ уровня сопротивления (то есть выше точки входа на графике), а не ниже."
+      },
+      {
+        instruction: "Часть 3 · Сделка на продажу. Шаг 3 из 3. Отметьте ЦЕЛЬ сделки — ближайший значимый уровень снизу, где вероятна остановка падения.",
+        candles: CANDLES_SHORT, height:130, domain:110,
+        target: SHORT_TARGET, tolerance: 11,
+        expCorrect: "Верно — это нижняя часть движения, разумная цель для фиксации прибыли по короткой сделке.",
+        expWrong: "Цель для продажи — самая нижняя часть графика, куда цена в итоге дошла после разворота от сопротивления."
       },
     ]
   }
@@ -1484,7 +1609,7 @@ function buildAxisChartSVG(segments, opts){
 
   // hard safety net: no two labels are ever allowed closer than a readable minimum,
   // regardless of how many modules end up sharing the same status (avoids text pile-ups)
-  const hardMinGap = 20;
+  const hardMinGap = 36;
   const byY = [...raw].sort((a,b) => a.y - b.y);
   for(let k=1; k<byY.length; k++){
     if(byY[k].y - byY[k-1].y < hardMinGap) byY[k].y = byY[k-1].y + hardMinGap;
@@ -1519,7 +1644,7 @@ function buildAxisChartSVG(segments, opts){
     if(isCurrent){
       liveLineSvg = `<line x1="0" y1="${origY}" x2="${chartW}" y2="${origY}" stroke="var(--bull)" stroke-width="1.2" stroke-dasharray="5 4" opacity="0.7"/>`;
     }
-    svg += `<foreignObject x="${labelX}" y="${r.y-13}" width="${W-labelX}" height="28">
+    svg += `<foreignObject x="${labelX}" y="${r.y-16}" width="${W-labelX}" height="32">
       <div xmlns="http://www.w3.org/1999/xhtml" style="${bg} width:${W-labelX-4}px; box-sizing:border-box; font-family:Inter,sans-serif; font-size:${fsize}px; font-weight:${weight}; color:var(--gold); opacity:${textOpacity}; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${seg.label}</div>
     </foreignObject>`;
     labelMeta.push({ seg, y: r.y, x: chartW, height: 24 });
@@ -1700,6 +1825,17 @@ function renderLesson(){
   const badgeHtml = slide.badge ? `<span class="pattern-badge ${slide.badge.t}">${slide.badge.label}</span><br>` : "";
   document.getElementById("lesson-slide-title").innerHTML = badgeHtml + slide.h;
   document.getElementById("lesson-slide-body").textContent = slide.b;
+  const calloutBox = document.getElementById("lesson-callout");
+  if(slide.callout){
+    const c = slide.callout;
+    calloutBox.innerHTML = `<div class="lesson-callout">
+      <div class="lesson-callout-head"><span class="lesson-callout-title">${c.title}</span></div>
+      <div class="lesson-callout-text">${c.text}</div>
+      <a class="lesson-callout-btn" href="${c.url}" target="_blank" rel="noopener">${c.label}</a>
+    </div>`;
+  } else {
+    calloutBox.innerHTML = "";
+  }
   document.getElementById("lesson-back-btn").style.display = slideIdx > 0 ? "block" : "none";
   const isLast = slideIdx + 1 >= slides.length;
   document.getElementById("lesson-next-btn").textContent = isLast ? (EXERCISES[activeLevel] ? "К практике →" : "К тесту →") : "Далее";
@@ -1715,8 +1851,8 @@ let voiceStyle = localStorage.getItem("ta_voice_style") || "male";
 let allRuVoices = [];
 let cachedRuVoice = null;
 
-const MALE_NAME_HINTS = ["yuri","pavel","dmitri","dmitry","ivan","male","мужск","михаил","артём","artem","maxim","максим"];
-const FEMALE_NAME_HINTS = ["milena","katya","elena","female","женск","алёна","alyona","irina","анна","anna","olga","ольга"];
+const MALE_NAME_HINTS = ["yuri","pavel","dmitri","dmitry","ivan","male","мужск","михаил","артём","artem","maxim","максим","aleksandr","alexander","sergei","sergey","boris","nikolai","oleg"];
+const FEMALE_NAME_HINTS = ["milena","katya","elena","female","женск","алёна","alyona","irina","анна","anna","olga","ольга","tatyana","татьяна","natasha","наталья","svetlana","светлана"];
 
 function loadRuVoice(){
   if(!("speechSynthesis" in window)) return;
@@ -1741,10 +1877,10 @@ function findVoiceByHints(hints){
 function applyVoiceStyle(utter){
   if(voiceStyle === "male"){
     utter.voice = findVoiceByHints(MALE_NAME_HINTS) || cachedRuVoice;
-    utter.pitch = 0.93; utter.rate = 0.97;
+    utter.pitch = 0.82; utter.rate = 0.93;
   } else if(voiceStyle === "female"){
     utter.voice = findVoiceByHints(FEMALE_NAME_HINTS) || cachedRuVoice;
-    utter.pitch = 1.07; utter.rate = 0.98;
+    utter.pitch = 1.22; utter.rate = 1.02;
   } else if(voiceStyle === "cartoon"){
     utter.voice = cachedRuVoice;
     utter.pitch = 1.75; utter.rate = 1.12;
@@ -1811,7 +1947,7 @@ function speakCurrentSlide(){
 function toggleVoiceAuto(){
   voiceAutoEnabled = !voiceAutoEnabled;
   localStorage.setItem("ta_voice_auto", voiceAutoEnabled ? "1" : "0");
-  document.getElementById("voice-toggle-btn").textContent = voiceAutoEnabled ? "🔊" : "🔈";
+  document.getElementById("voice-toggle-btn").innerHTML = voiceAutoEnabled ? ICON_SPEAKER_ON : ICON_SPEAKER_OFF;
   if(!voiceAutoEnabled) stopSpeaking();
 }
 
@@ -2201,7 +2337,360 @@ function finishQuiz(){
 
 /* ============ INTERACTIVE EXERCISES (retry-aware) ============ */
 
+function round1(x){ return Math.round(x*10)/10; }
+function randRange(a,b){ return a + Math.random()*(b-a); }
+
+function moveToward(candles, vStart, vTarget, steps, wickPad){
+  let v = vStart;
+  for(let i=0; i<steps; i++){
+    const remain = steps - i;
+    const stepSize = (vTarget - v) / remain;
+    const noise = (Math.random()-0.5) * 5;
+    const o = v;
+    let c = v + stepSize + noise;
+    const bt = Math.min(o,c), bb = Math.max(o,c);
+    const h = bt - randRange(1, wickPad), l = bb + randRange(1, wickPad);
+    candles.push({o:round1(o), h:round1(h), l:round1(l), c:round1(c)});
+    v = c;
+  }
+  return v;
+}
+
+function touchSupportBounce(candles, vStart, supportLevel){
+  const o = vStart;
+  const bounceSize = randRange(7, 13);
+  const c = o - bounceSize;
+  const bt = Math.min(o,c), bb = Math.max(o,c);
+  const l = Math.max(supportLevel + randRange(0.3, 1.5), bb + randRange(0.5, 2));
+  const h = bt - randRange(1, 3);
+  candles.push({o:round1(o), h:round1(h), l:round1(l), c:round1(c)});
+  return c;
+}
+
+function touchResistanceReject(candles, vStart, resistanceLevel){
+  const o = vStart;
+  const rejectSize = randRange(7, 13);
+  const c = o + rejectSize;
+  const bt = Math.min(o,c), bb = Math.max(o,c);
+  const h = Math.min(resistanceLevel - randRange(0.3, 1.5), bt - randRange(0.5, 2));
+  const l = bb + randRange(1, 3);
+  candles.push({o:round1(o), h:round1(h), l:round1(l), c:round1(c)});
+  return c;
+}
+
+function generateSRScenario(){
+  const support = randRange(83, 94);
+  const resistance = randRange(14, 25);
+  const candles = [];
+  let v = randRange(55, 66);
+  v = moveToward(candles, v, support - randRange(3,8), 3, 3);
+  v = touchSupportBounce(candles, v, support);
+  v = moveToward(candles, v, resistance + randRange(3,8), 4, 3);
+  v = touchResistanceReject(candles, v, resistance);
+  v = moveToward(candles, v, support - randRange(3,8), 3, 3);
+  v = touchSupportBounce(candles, v, support);
+  moveToward(candles, v, v - randRange(6,11), 2, 3);
+  return { candles, support: round1(support), resistance: round1(resistance) };
+}
+
+function generateLongTradeScenario(){
+  const support = randRange(88, 98);
+  const targetVal = randRange(8, 18);
+  const candles = [];
+  let v = randRange(60, 74);
+  v = moveToward(candles, v, support - randRange(3,7), 4, 3);
+  const beforeTouch = v;
+  const afterTouch = touchSupportBounce(candles, v, support);
+  moveToward(candles, afterTouch, targetVal + randRange(2,6), 4, 3);
+  const entry = round1((beforeTouch + support)/2);
+  const stop = round1(support + randRange(6,10));
+  return { candles, entry, stop, target: round1(targetVal) };
+}
+
+function generateShortTradeScenario(){
+  const resistance = randRange(14, 24);
+  const targetVal = randRange(82, 96);
+  const candles = [];
+  let v = randRange(46, 60);
+  v = moveToward(candles, v, resistance + randRange(3,7), 4, 3);
+  const beforeTouch = v;
+  const afterTouch = touchResistanceReject(candles, v, resistance);
+  moveToward(candles, afterTouch, targetVal - randRange(2,6), 4, 3);
+  const entry = round1((beforeTouch + resistance)/2);
+  const stop = round1(resistance - randRange(6,10));
+  return { candles, entry, stop, target: round1(targetVal) };
+}
+
+function generateTrendChart(direction){
+  const candles = [];
+  let v = randRange(45, 55);
+  const n = 10;
+  for(let i=0; i<n; i++){
+    let drift;
+    if(direction === "up") drift = -randRange(3.5, 6.5);
+    else if(direction === "down") drift = randRange(3.5, 6.5);
+    else drift = (Math.random()-0.5) * 3;
+    const noise = (Math.random()-0.5) * 4;
+    const o = v;
+    let c = v + drift + noise;
+    c = Math.max(4, Math.min(96, c));
+    const bt = Math.min(o,c), bb = Math.max(o,c);
+    const h = bt - randRange(1,3), l = bb + randRange(1,3);
+    candles.push({o:round1(o), h:round1(h), l:round1(l), c:round1(c)});
+    v = c;
+  }
+  return candles;
+}
+
+function buildTrendIdStep(){
+  const dirs = ["up","down","flat"];
+  const dir = dirs[Math.floor(Math.random()*3)];
+  const candles = generateTrendChart(dir);
+  const expMap = {
+    up: "Верно — цена последовательно делает более высокие максимумы и минимумы, слева направо.",
+    down: "Верно — цена последовательно делает более низкие максимумы и минимумы, слева направо.",
+    flat: "Верно — цена движется в горизонтальном диапазоне, без последовательных новых максимумов или минимумов."
+  };
+  const correctIdx = dir === "up" ? 0 : dir === "down" ? 1 : 2;
+  return {
+    type: "choice",
+    instruction: "Часть 4 · Определи тренд. Посмотрите на график и определите направление тренда.",
+    candles, height:110, domain:100,
+    options: ["Восходящий тренд", "Нисходящий тренд", "Боковик (флэт)"],
+    correctIdx,
+    expCorrect: expMap[dir],
+    expWrong: "Присмотритесь ещё раз к общему направлению максимумов и минимумов слева направо, не отвлекаясь на отдельные свечи."
+  };
+}
+
+const INDICATOR_CHOICE_STEPS = [
+  {
+    type: "choice",
+    instruction: "Часть 5 · Подбери индикатор. Вы торгуете чёткий боковик — цена колеблется в узком диапазоне без направления. Что лучше подойдёт для поиска точек входа?",
+    options: ["Осциллятор (RSI или Stochastic) — ловит края диапазона", "Скользящая средняя — следует за трендом", "Индикатор объёма сам по себе", "В боковике индикаторы не нужны вообще"],
+    correctIdx: 0,
+    expCorrect: "Верно — осцилляторы измеряют перекупленность/перепроданность и особенно хорошо работают именно в боковике.",
+    expWrong: "В боковике нет устойчивого направления, поэтому трендовые индикаторы работают хуже — лучше подходит осциллятор."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 5 · Подбери индикатор. Рынок на сильном устойчивом тренде, и вам нужно подтверждение направления, а не сигналы разворота. Что выбрать?",
+    options: ["Скользящую среднюю или MACD — следуют за трендом", "RSI — ищет перекупленность против тренда", "Только объём без цены", "Индикаторы бесполезны на тренде"],
+    correctIdx: 0,
+    expCorrect: "Верно — трендовые индикаторы подтверждают направление уже начавшегося движения, не пытаясь ловить разворот против него.",
+    expWrong: "Осцилляторы вроде RSI на сильном тренде могут долго оставаться в «перекупленности», подавая ранние сигналы против движения — не лучший выбор здесь."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 5 · Подбери индикатор. Вы хотите поставить стоп-лосс на разумном расстоянии с учётом реальной амплитуды движений актива. Какой инструмент подходит лучше всего?",
+    options: ["ATR — измеряет средний размах движения цены", "RSI — измеряет перекупленность", "MACD — измеряет схождение средних", "Календарь новостей"],
+    correctIdx: 0,
+    expCorrect: "Верно — ATR напрямую показывает типичную амплитуду движения, что и нужно для расстановки стопа.",
+    expWrong: "ATR — единственный из этих инструментов, который измеряет именно волатильность (амплитуду), а не направление или моментум."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 5 · Подбери индикатор. Цена сделала новый максимум, а RSI не подтвердил его собственным более высоким пиком. Как правильно назвать эту ситуацию?",
+    options: ["Дивергенция — сигнал ослабления импульса", "Совпадение, ничего не значащее", "Ошибка в расчёте индикатора", "Гарантированный разворот прямо сейчас"],
+    correctIdx: 0,
+    expCorrect: "Верно — это классическая медвежья дивергенция, предупреждение об ослаблении движения, а не гарантия разворота.",
+    expWrong: "Такое расхождение между ценой и индикатором называется дивергенцией — это сигнал к вниманию, а не однозначная гарантия."
+  },
+];
+
+const FUNDAMENTAL_DIRECTION_STEPS = [
+  {
+    type: "choice",
+    instruction: "Часть 6 · Куда пойдёт цена. Центробанк неожиданно повысил ставку сильнее, чем ожидал рынок. Как это обычно влияет на валюту в первые минуты?",
+    options: ["Валюта обычно укрепляется", "Валюта обычно слабеет", "Никак не влияет на курс", "Влияет только на крипту"],
+    correctIdx: 0,
+    expCorrect: "Верно — более высокая ставка обычно повышает привлекательность валюты для капитала, ищущего доходность.",
+    expWrong: "Более высокая, чем ожидалось, ставка обычно укрепляет валюту — капитал реагирует на возросшую доходность."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 6 · Куда пойдёт цена. Инфляция (CPI) вышла заметно НИЖЕ прогноза. Что это обычно меняет в ожиданиях по будущей ставке центробанка?",
+    options: ["Ожидания смягчаются — ставку скорее не будут повышать или даже снизят", "Центробанк немедленно резко повышает ставку", "Инфляция никак не связана со ставкой", "Валюта в любом случае всегда падает"],
+    correctIdx: 0,
+    expCorrect: "Верно — низкая инфляция снижает необходимость дальнейшего ужесточения политики, что рынок закладывает в цену сразу.",
+    expWrong: "Инфляция ниже прогноза обычно смягчает ожидания по ставке — рынок закладывает это в цену почти мгновенно."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 6 · Куда пойдёт цена. Компания отчиталась о прибыли ВЫШЕ прогноза, но акция всё равно упала на новости. Что вероятнее всего произошло?",
+    options: ["Прогноз компании на будущие периоды (guidance) разочаровал рынок", "Отчёт компании был ошибочным", "Инвесторы не разобрались в отчёте", "Рост прибыли всегда обязан обваливать акцию"],
+    correctIdx: 0,
+    expCorrect: "Верно — рынок торгует ожиданиями вперёд; слабый прогноз на будущее часто перевешивает уже случившийся хороший квартал.",
+    expWrong: "Чаще всего дело в разочаровывающем прогнозе на будущее — рынок реагирует на ожидания вперёд, а не только на факт за прошлый период."
+  },
+];
+
+const PATTERN_NAMES = {
+  DOJI: "Доджи", HAMMER: "Молот", STAR: "Падающая звезда",
+  ENGULF_BULL: "Бычье поглощение", ENGULF_BEAR: "Медвежье поглощение",
+  HARAMI_BULL: "Бычье харами", HARAMI_BEAR: "Медвежье харами",
+  MARUBOZU_BULL: "Марибозу (бычье)", MARUBOZU_BEAR: "Марибозу (медвежье)",
+  THREE_SOLDIERS: "Три белых солдата", THREE_CROWS: "Три чёрных вороны",
+  MORNING_STAR: "Утренняя звезда", EVENING_STAR: "Вечерняя звезда",
+};
+
+function shuffleArr(arr){
+  const a = [...arr];
+  for(let i=a.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildPatternIdStep(){
+  const keys = Object.keys(PATTERN_NAMES);
+  const correctKey = keys[Math.floor(Math.random()*keys.length)];
+  const distractors = shuffleArr(keys.filter(k => k !== correctKey)).slice(0,3);
+  const allKeys = shuffleArr([correctKey, ...distractors]);
+  const correctIdx = allKeys.indexOf(correctKey);
+  return {
+    type: "choice",
+    instruction: "Часть 7 · Узнай паттерн. Какой свечной паттерн показан на графике?",
+    candles: PATTERN_CANDLES[correctKey], height:110, domain:100,
+    options: allKeys.map(k => PATTERN_NAMES[k]),
+    correctIdx,
+    expCorrect: `Верно — это ${PATTERN_NAMES[correctKey].toLowerCase()}.`,
+    expWrong: `Это ${PATTERN_NAMES[correctKey]} — присмотритесь к форме тела и теней ещё раз.`
+  };
+}
+
+const PSYCHOLOGY_TRAP_STEPS = [
+  {
+    type: "choice",
+    instruction: "Часть 8 · Психологическая ловушка. «Я только что закрыл сделку в минус. Открою сейчас же новую, вдвое больше объёмом — точно отыграюсь сегодня же». Что это за ловушка?",
+    options: ["Реванш-трейдинг", "FOMO", "Излишняя самоуверенность", "Неприятие потерь"],
+    correctIdx: 0,
+    expCorrect: "Верно — немедленная попытка отыграться увеличенным объёмом сразу после убытка — классический реванш-трейдинг.",
+    expWrong: "Это реванш-трейдинг — желание немедленно отыграться, обычно увеличенным объёмом, сразу после убытка."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 8 · Психологическая ловушка. «Цена уже выросла на 8% за час, все в чате пишут, что зарабатывают — надо срочно запрыгнуть, пока не уехало ещё выше». Что это за ловушка?",
+    options: ["FOMO — страх упустить возможность", "Реванш-трейдинг", "Выгорание", "Диверсификация"],
+    correctIdx: 0,
+    expCorrect: "Верно — импульсивный вход просто потому, что «все зарабатывают», это FOMO, и обычно это худшая точка входа.",
+    expWrong: "Это FOMO — страх упустить движение толкает войти в сделку без своего сигнала, обычно уже в конце движения."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 8 · Психологическая ловушка. «Пять сделок подряд в плюс! Дальше можно рисковать посерьёзнее, я явно поймал рынок». Что это за ловушка?",
+    options: ["Излишняя самоуверенность", "Реванш-трейдинг", "FOMO", "Дисциплина"],
+    correctIdx: 0,
+    expCorrect: "Верно — именно после удачной серии бдительность снижается, и растёт риск самой болезненной ошибки.",
+    expWrong: "Это излишняя самоуверенность — удачная серия сделок не отменяет случайность отдельного результата и не повод резко увеличивать риск."
+  },
+];
+
+const BREAKOUT_JUDGMENT_STEPS = [
+  {
+    type: "choice",
+    instruction: "Часть 9 · Пробой: настоящий или ложный. Цена пробила сопротивление, но объём на пробое был заметно НИЖЕ обычного, и через пару свечей цена вернулась обратно в диапазон. Что вероятнее произошло?",
+    options: ["Ложный пробой — не хватило реального интереса участников", "Стопроцентно настоящий пробой", "Начало нового долгосрочного тренда", "Технический сбой биржи"],
+    correctIdx: 0,
+    expCorrect: "Верно — слабый объём на пробое часто значит, что за движением не стоит реальный интерес, и цена возвращается в диапазон.",
+    expWrong: "Слабый объём на пробое и быстрый возврат в диапазон — классические признаки ложного пробоя."
+  },
+  {
+    type: "choice",
+    instruction: "Часть 9 · Пробой: настоящий или ложный. Цена пробила сопротивление на объёме заметно выше среднего и закрепилась выше уровня несколько периодов подряд. Что вероятнее?",
+    options: ["Настоящий пробой с реальным подтверждением", "Гарантированно ложный пробой", "Технический сбой", "Пробой не имеет значения без индикаторов"],
+    correctIdx: 0,
+    expCorrect: "Верно — высокий объём и закрепление выше уровня — именно то подтверждение, которое отличает настоящий пробой от ложного.",
+    expWrong: "Высокий объём на пробое и закрепление цены выше уровня — сильные признаки настоящего пробоя, а не ложного."
+  },
+];
+
+function buildPracticeExerciseSteps(){
+  const sr = generateSRScenario();
+  const long_ = generateLongTradeScenario();
+  const short_ = generateShortTradeScenario();
+  return [
+    {
+      instruction: "Часть 1 · Разметка уровней. Шаг 1 из 3. Нажмите на график там, где цена ПЕРВЫЙ РАЗ оттолкнулась от поддержки и пошла вверх.",
+      candles: sr.candles, height:130, domain:100,
+      target: sr.support, tolerance: 11,
+      expCorrect: "Верно — здесь цена дважды не смогла пробить эту зону вниз, покупатели каждый раз перехватывали инициативу.",
+      expWrong: "Не совсем — поддержка находится ниже на графике, там, где нижние тени свечей почти на одном уровне (около отметки, которую видно по повторным касаниям)."
+    },
+    {
+      instruction: "Часть 1 · Разметка уровней. Шаг 2 из 3. Теперь нажмите на зону СОПРОТИВЛЕНИЯ — там, где цена дважды разворачивалась вниз.",
+      candles: sr.candles, height:130, domain:100,
+      target: sr.resistance, tolerance: 11,
+      expCorrect: "Точно — верхние тени свечей здесь почти совпадают, это и есть зона сопротивления.",
+      expWrong: "Сопротивление находится выше на графике — там, где верхние тени нескольких свечей упираются в одну и ту же горизонталь."
+    },
+    {
+      instruction: "Часть 1 · Разметка уровней. Шаг 3 из 3. Отметьте ВТОРОЕ касание поддержки — цена вернулась к той же зоне ещё раз.",
+      candles: sr.candles, height:130, domain:100,
+      target: sr.support, tolerance: 11,
+      expCorrect: "Именно так. Второе касание подтверждает: это не случайность, а настоящая зона интереса покупателей.",
+      expWrong: "Второе касание поддержки — снова в нижней части графика, на том же уровне, что и первое."
+    },
+    {
+      instruction: "Часть 2 · Разбор сделки. Шаг 1 из 3. Определите точку ВХОДА в покупку — нажмите там, где цена коснулась поддержки и начала разворот вверх.",
+      candles: long_.candles, height:130, domain:110,
+      target: long_.entry, tolerance: 12,
+      expCorrect: "Верно — здесь цена протестировала зону поддержки и тут же развернулась. Логичная точка для входа в покупку.",
+      expWrong: "Точка входа — там, где нижние тени свечей нащупали одну и ту же зону поддержки и цена сразу пошла вверх."
+    },
+    {
+      instruction: "Часть 2 · Разбор сделки. Шаг 2 из 3. Поставьте СТОП-ЛОСС — чуть ниже уровня поддержки, который отменяет идею на покупку.",
+      candles: long_.candles, height:130, domain:110,
+      target: long_.stop, tolerance: 9,
+      expCorrect: "Правильно — стоп чуть ниже поддержки. Если цена туда дойдёт, значит уровень пробит и идея на покупку не сработала.",
+      expWrong: "Стоп должен быть НИЖЕ уровня поддержки (то есть ниже точки входа на графике), а не выше и не точно на входе."
+    },
+    {
+      instruction: "Часть 2 · Разбор сделки. Шаг 3 из 3. Отметьте ЦЕЛЬ сделки — ближайший значимый уровень сверху, где вероятен разворот или остановка роста.",
+      candles: long_.candles, height:130, domain:110,
+      target: long_.target, tolerance: 11,
+      expCorrect: "Верно — это верхняя часть движения, разумная цель для фиксации прибыли по этой сделке.",
+      expWrong: "Цель — самая верхняя часть графика, куда цена в итоге дошла после разворота от поддержки."
+    },
+    {
+      instruction: "Часть 3 · Сделка на продажу. Шаг 1 из 3. Здесь цена росла, но упёрлась в сопротивление и развернулась вниз. Отметьте точку ВХОДА в продажу — там, где цена оттолкнулась от сопротивления вниз.",
+      candles: short_.candles, height:130, domain:110,
+      target: short_.entry, tolerance: 12,
+      expCorrect: "Верно — цена протестировала сопротивление и тут же развернулась вниз. Логичная точка для входа в продажу.",
+      expWrong: "Точка входа в продажу — там, где верхние тени свечей упёрлись в сопротивление и цена сразу пошла вниз."
+    },
+    {
+      instruction: "Часть 3 · Сделка на продажу. Шаг 2 из 3. Поставьте СТОП-ЛОСС — чуть выше уровня сопротивления, который отменяет идею на продажу.",
+      candles: short_.candles, height:130, domain:110,
+      target: short_.stop, tolerance: 9,
+      expCorrect: "Правильно — стоп чуть выше сопротивления. Если цена туда дойдёт, значит уровень пробит вверх и идея на продажу не сработала.",
+      expWrong: "При продаже стоп ставят ВЫШЕ уровня сопротивления (то есть выше точки входа на графике), а не ниже."
+    },
+    {
+      instruction: "Часть 3 · Сделка на продажу. Шаг 3 из 3. Отметьте ЦЕЛЬ сделки — ближайший значимый уровень снизу, где вероятна остановка падения.",
+      candles: short_.candles, height:130, domain:110,
+      target: short_.target, tolerance: 11,
+      expCorrect: "Верно — это нижняя часть движения, разумная цель для фиксации прибыли по короткой сделке.",
+      expWrong: "Цель для продажи — самая нижняя часть графика, куда цена в итоге дошла после разворота от сопротивления."
+    },
+    buildTrendIdStep(),
+    buildTrendIdStep(),
+    buildTrendIdStep(),
+    ...INDICATOR_CHOICE_STEPS,
+    ...FUNDAMENTAL_DIRECTION_STEPS,
+    buildPatternIdStep(),
+    buildPatternIdStep(),
+    buildPatternIdStep(),
+    ...PSYCHOLOGY_TRAP_STEPS,
+    ...BREAKOUT_JUDGMENT_STEPS,
+  ];
+}
+
 function startExercise(){
+  if(activeLevel === 8){
+    EXERCISES[8].steps = buildPracticeExerciseSteps();
+  }
   const ex = EXERCISES[activeLevel];
   exIsCorrect = new Array(ex.steps.length).fill(undefined);
   exOrder = ex.steps.map((_,i) => i);
@@ -2222,13 +2711,55 @@ function renderExercise(){
   bar.innerHTML = exOrder.map((_,i) => `<div class="progress-seg" style="background:${i<exRoundPos?'var(--gold)':i===exRoundPos?'var(--textDim)':'var(--border)'}"></div>`).join("");
   document.getElementById("ex-instruction").textContent = step.instruction;
   const wrap = document.getElementById("ex-chart-wrap");
-  wrap.innerHTML = buildCandleSVG(step.candles, {height: step.height, domain: step.domain});
   exAnswered = false;
-  document.getElementById("ex-hint").style.display = "block";
   document.getElementById("ex-exp").innerHTML = "";
   document.getElementById("ex-next-btn").style.display = "none";
-  const svgEl = wrap.querySelector("svg");
-  svgEl.onclick = (evt) => handleExerciseTap(evt, svgEl, step, originalIdx);
+
+  if(step.type === "choice"){
+    document.getElementById("ex-hint").style.display = "none";
+    let html = "";
+    if(step.candles){
+      html += buildCandleSVG(step.candles, {height: step.height||110, domain: step.domain||100});
+    }
+    html += `<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px;">`;
+    step.options.forEach((opt,i) => {
+      html += `<button class="ex-choice-btn" id="ex-choice-${i}" onclick="handleExerciseChoice(${i}, ${originalIdx})">${opt}</button>`;
+    });
+    html += `</div>`;
+    wrap.innerHTML = html;
+  } else {
+    document.getElementById("ex-hint").style.display = "block";
+    wrap.innerHTML = buildCandleSVG(step.candles, {height: step.height, domain: step.domain});
+    const svgEl = wrap.querySelector("svg");
+    svgEl.onclick = (evt) => handleExerciseTap(evt, svgEl, step, originalIdx);
+  }
+}
+
+function handleExerciseChoice(choiceIdx, originalIdx){
+  if(exAnswered) return;
+  exAnswered = true;
+  const ex = EXERCISES[activeLevel];
+  const step = ex.steps[originalIdx];
+  const isCorrect = choiceIdx === step.correctIdx;
+  const firstTimeCorrect = isCorrect && exIsCorrect[originalIdx] !== true;
+  if(firstTimeCorrect) exXpEarned += 15;
+  exIsCorrect[originalIdx] = isCorrect;
+
+  step.options.forEach((_, i) => {
+    const btn = document.getElementById(`ex-choice-${i}`);
+    btn.disabled = true;
+    if(i === step.correctIdx) btn.classList.add("choice-correct");
+    else if(i === choiceIdx) btn.classList.add("choice-wrong");
+  });
+
+  document.getElementById("ex-exp").innerHTML = `<div class="exp-box ${isCorrect?'correct':'wrong'}">
+    <div class="exp-label ${isCorrect?'correct':'wrong'}">${isCorrect?'Верно':'Мимо'}</div>
+    ${isCorrect ? step.expCorrect : step.expWrong}
+  </div>`;
+  const isLast = exRoundPos + 1 >= exOrder.length;
+  const nextBtn = document.getElementById("ex-next-btn");
+  nextBtn.style.display = "flex";
+  nextBtn.textContent = isLast ? "Завершить" : "Далее";
 }
 
 function handleExerciseTap(evt, svgEl, step, originalIdx){
@@ -2500,7 +3031,7 @@ function toggleTheme(){
   const root = document.documentElement;
   const isDark = root.getAttribute("data-theme") !== "light";
   root.setAttribute("data-theme", isDark ? "light" : "dark");
-  document.getElementById("theme-toggle-btn").textContent = isDark ? "☀️" : "🌙";
+  document.getElementById("theme-toggle-btn").innerHTML = isDark ? ICON_SUN : ICON_MOON;
   localStorage.setItem("ta_theme", isDark ? "light" : "dark");
 }
 
@@ -2525,6 +3056,16 @@ const GLOSSARY = [
   { t: "Молот (Hammer)", d: "Маленькое тело сверху и длинная нижняя тень; после падения — бычий разворотный сигнал." },
   { t: "Мультитаймфрейм анализ", d: "Проверка сигнала сразу на нескольких таймфреймах: старший задаёт направление, младший — точку входа." },
   { t: "Объём торгов", d: "Количество сделок, заключённых за период. Пробой уровня на большом объёме надёжнее, чем на слабом." },
+  { t: "ATR (Average True Range)", d: "Измеритель волатильности — показывает средний размах движения цены за период. Часто используют для расстановки стоп-лосса." },
+  { t: "Гэп", d: "Разрыв между закрытием одной свечи и открытием следующей без сделок в промежутке. Обычно возникает на открытии биржи или на неожиданных новостях." },
+  { t: "Дивергенция", d: "Расхождение между ценой и индикатором (например, RSI) — сигнал ослабления импульса движения, предупреждение о возможном развороте." },
+  { t: "Керри-трейд", d: "Стратегия, где занимают валюту с низкой процентной ставкой и вкладывают в валюту с высокой, зарабатывая на разнице." },
+  { t: "Внутренний бар (Inside Bar)", d: "Свеча, чей диапазон полностью укладывается внутри диапазона предыдущей свечи — пауза перед следующим движением." },
+  { t: "Внешний бар (Outside Bar)", d: "Свеча, чей диапазон полностью перекрывает диапазон предыдущей свечи — резкий всплеск волатильности." },
+  { t: "P/E (цена/прибыль)", d: "Показывает, сколько лет потребуется компании, чтобы окупить свою текущую цену прибылью. Высокий P/E — рынок ждёт быстрого роста." },
+  { t: "Сезонность", d: "Статистическая тенденция актива вести себя по-разному в зависимости от календарного периода. Не гарантия на будущее." },
+  { t: "Скользящая средняя (Moving Average)", d: "Индикатор, сглаживающий цену — среднее значение за последние N периодов. Простая (SMA) и экспоненциальная (EMA) версии." },
+  { t: "Уровни Фибоначчи", d: "Характерные уровни отката цены после сильного движения — 23.6%, 38.2%, 50%, 61.8%. Используются как вероятные зоны разворота." },
   { t: "OTC (внебиржевой рынок)", d: "Сеть прямых сделок между участниками без единой централизованной площадки и общей книги заявок. Форекс — классический пример." },
   { t: "Поглощение (Engulfing)", d: "Паттерн из двух свечей, где тело второй полностью перекрывает тело первой — резкая смена контроля на рынке." },
   { t: "Подтверждающее искажение", d: "Склонность мозга замечать только информацию, подтверждающую уже открытую позицию, и игнорировать остальное." },
@@ -2779,10 +3320,10 @@ function togglePwd(inputId, btn){
   if(!el) return;
   if(el.type === "password"){
     el.type = "text";
-    btn.textContent = "🙈";
+    btn.innerHTML = ICON_EYE_OFF;
   } else {
     el.type = "password";
-    btn.textContent = "👁";
+    btn.innerHTML = ICON_EYE;
   }
 }
 
@@ -2824,8 +3365,8 @@ function saveDevPassword(){
 loadProgress();
 const savedTheme = localStorage.getItem("ta_theme") || "dark";
 document.documentElement.setAttribute("data-theme", savedTheme);
-document.getElementById("theme-toggle-btn").textContent = savedTheme === "dark" ? "🌙" : "☀️";
-document.getElementById("voice-toggle-btn").textContent = voiceAutoEnabled ? "🔊" : "🔈";
+document.getElementById("theme-toggle-btn").innerHTML = savedTheme === "dark" ? ICON_MOON : ICON_SUN;
+document.getElementById("voice-toggle-btn").innerHTML = voiceAutoEnabled ? ICON_SPEAKER_ON : ICON_SPEAKER_OFF;
 
 function completeOnboarding(){
   saveProfile({
